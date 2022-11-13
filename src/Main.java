@@ -12,15 +12,32 @@ Day 1 Meeting:
     notes: hold 2nd meeting over the weekend
  */
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 
-public class Main {
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class Main extends Application {
     JFrame frame;
 
     public Main() {
+        // old GUI
+        /*
         boolean play = true;
-        createGameWindow();
+        //createGameWindow();
         // game loop
         while(play) {
             // update NPC positions
@@ -29,8 +46,27 @@ public class Main {
             Runner r1 = new Runner();
             play = false; // exit condition
         }
+
+         */
     }
 
+    @Override
+    public void start(Stage primaryStage) {
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource("Controller.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        primaryStage.setTitle("Catch me if you can!");
+        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.show();
+    }
+
+    /**
+     * old gui
+     */
     private void createGameWindow() {
         // components
         frame = new JFrame("Tag me if you can!");
@@ -55,6 +91,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main();
+        launch(args);
     }
 }
