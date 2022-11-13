@@ -27,7 +27,6 @@ public class Main {
             // check for collisions between GameItems (probably will be inefficient like crazy)
             // TODO determine if GameItems count will be a detriment to performance
             Runner r1 = new Runner();
-            frame.get
             play = false; // exit condition
         }
     }
