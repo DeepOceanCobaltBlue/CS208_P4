@@ -2,7 +2,11 @@
  *
  * */
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -12,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import java.io.IOException;
 
 
@@ -97,6 +103,45 @@ public class mainDriver extends Application {
 
         //adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
+
+
+        startButton.setOnAction(e -> {
+
+            Timeline timeline = new Timeline( new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
+
+                double x = 26;
+                double y = 26;
+                double dx = 1;
+                double dy = 1;
+
+                @Override
+                public void handle(ActionEvent t) {
+                    //move the ball
+                    x += dx;
+                    y += dy;
+                    player1.setLayoutX(x);
+                    player1.setLayoutY(y);
+
+                    //check if the ball moves over the bounds
+                    //if the ball reaches the left or right border make the step negative
+                    if(x > 375 || x < 0) {
+                        dx = -dx;
+                    }
+
+                    //if the ball reaches the bottom or top border make the step negative
+                    if(y > 275 || y < 0) {
+                        dy = -dy;
+                    }
+                }
+            }));
+
+
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+
+
+
+        });
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Game of Tag!");
