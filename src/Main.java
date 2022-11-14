@@ -34,20 +34,7 @@ public class Main extends Application {
     JFrame frame;
 
     public Main() {
-        // old GUI
-        /*
-        boolean play = true;
-        //createGameWindow();
-        // game loop
-        while(play) {
-            // update NPC positions
-            // check for collisions between GameItems (probably will be inefficient like crazy)
-            // TODO determine if GameItems count will be a detriment to performance
-            Runner r1 = new Runner();
-            play = false; // exit condition
-        }
-
-         */
+      
     }
 
     @Override
@@ -64,9 +51,10 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    /**
-     * old gui
-     */
+    @Override
+    public void start(Stage primaryStage) {
+
+    }
     private void createGameWindow() {
         // components
         frame = new JFrame("Tag me if you can!");
