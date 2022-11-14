@@ -1,25 +1,20 @@
-import java.awt.Rectangle;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 
-public class Tagger extends NPC implements ActionListener {
+public class Tagger extends NPC {
 
     public Tagger() {
-        super(5, 0, new Rectangle(0, 0, 10, 10), Color.GREEN);
-    }
-
-    public Tagger(double rad, int num, Rectangle b, Color inColor) {
-        super(rad, num, b, inColor);
+        super();
+        super.setSpeed(2);
         super.setCanTeleport(false);
-        super.setSpeed(4);
+        super.setFill(Color.GREEN);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // if collision with runner
-        // trigger runner methods
-        // TODO does tagger need an action listener?
-
+    public Tagger(double startX, double startY, double rad, Paint inColor, int ID) {
+        super(startX, startY, rad, inColor, ID);
+        super.setSpeed(2);
+        super.setCanTeleport(false);
     }
+
+
 }

@@ -28,7 +28,7 @@ public class mainDriver extends Application {
 
         //basePane is the highest level pane, the root node of the scene graph
         Pane basePane = new Pane();
-        Scene scene = new Scene(basePane, 800, 750);
+        Scene scene = new Scene(basePane, 800, 700);
 
         //vertContainer is the vertical container for the toolbar and the two horizontal containers
         VBox vertContainer = new VBox();
@@ -56,12 +56,12 @@ public class mainDriver extends Application {
         topLeftRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
 
         //creating/adding the first 'teleport' and a first 'player' to the topLeftRoom as children
-        Circle player1 = new Circle(20, Color.RED);
-        player1.setLayoutX(26);
-        player1.setLayoutY(26);
-        Circle teleport1 = new Circle(20, Color.BLUE);
-        teleport1.setLayoutX(361);
-        teleport1.setLayoutY(39);
+        Runner player1 = new Runner(26, 26, 10, Color.RED, 13);
+        player1.setLayoutX(player1.getCenterX());
+        player1.setLayoutY(player1.getCenterY());
+        Teleporter teleport1 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        teleport1.setLayoutX(teleport1.getCenterX());
+        teleport1.setLayoutY(teleport1.getCenterY());
         topLeftRoom.getChildren().addAll(player1, teleport1);
 
         //topRightRoom with just a teleport currently
@@ -69,9 +69,9 @@ public class mainDriver extends Application {
         topRightRoom.setPrefSize(400, 300);
         topRightRoom.setMaxSize(400, 300);
         topRightRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-        Circle teleport2 = new Circle(20, Color.BLUE);
-        teleport2.setLayoutX(361);
-        teleport2.setLayoutY(39);
+        Teleporter teleport2 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        teleport2.setLayoutX(teleport2.getCenterX());
+        teleport2.setLayoutY(teleport2.getCenterY());
         topRightRoom.getChildren().add(teleport2);
 
         //adding the two top rooms to topRoomsContainer
@@ -87,18 +87,18 @@ public class mainDriver extends Application {
         bottomLeftRoom.setPrefSize(400, 300);
         bottomLeftRoom.setMaxSize(400, 300);
         bottomLeftRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-        Circle teleport3 = new Circle(20, Color.BLUE);
-        teleport3.setLayoutX(361);
-        teleport3.setLayoutY(39);
+        Teleporter teleport3 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        teleport3.setLayoutX(teleport3.getCenterX());
+        teleport3.setLayoutY(teleport3.getCenterY());
         bottomLeftRoom.getChildren().add(teleport3);
 
         Pane bottomRightRoom = new Pane();
         bottomRightRoom.setPrefSize(400, 300);
         bottomRightRoom.setMaxSize(400, 300);
         bottomRightRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-        Circle teleport4 = new Circle(20, Color.BLUE);
-        teleport4.setLayoutX(361);
-        teleport4.setLayoutY(39);
+        Teleporter teleport4 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        teleport4.setLayoutX(teleport4.getCenterX());
+        teleport4.setLayoutY(teleport4.getCenterY());
         bottomRightRoom.getChildren().add(teleport4);
 
         //adding the two bottom rooms to bottomRoomsContainer

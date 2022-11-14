@@ -1,20 +1,17 @@
-import java.awt.Rectangle;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javafx.scene.paint.Paint;
 
-public class Teleporter extends GameItem implements ActionListener {
+public class Teleporter extends GameItem {
 
-    public  Teleporter() {
-        super(1, 0, new Rectangle(0, 0, 1, 1), Color.BLACK);
+    public Teleporter() {
+        super();
+    }
+    public Teleporter(double startX, double startY, double rad, Paint inColor) {
+        super(startX, startY, rad, inColor);
+        super.setNumID(0);
     }
 
-    public Teleporter(double rad, int num, Rectangle b, Color inColor) {
-        super(rad, num, b, inColor);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
+    public Teleporter(double startX, double startY, double rad, Paint inColor, int ID) {
+        super(startX, startY, rad, inColor);
+        super.setNumID(ID);
     }
 }
