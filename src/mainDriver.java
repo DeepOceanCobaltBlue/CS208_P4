@@ -124,12 +124,12 @@ public class mainDriver extends Application {
 
                     //check if the ball moves over the bounds
                     //if the ball reaches the left or right border make the step negative
-                    if(x > 375 || x < 0) {
+                    if(x > 375 || (x - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
                         dx = -dx;
                     }
 
                     //if the ball reaches the bottom or top border make the step negative
-                    if(y > 275 || y < 0) {
+                    if(y > 275 || (y- (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
                         dy = -dy;
                     }
                 }
