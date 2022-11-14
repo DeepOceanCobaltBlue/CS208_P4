@@ -12,15 +12,17 @@ Day 1 Meeting:
     notes: hold 2nd meeting over the weekend
  */
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
+public class Main extends Application {
     JFrame frame;
 
     public Main() {
         boolean play = true;
-        createGameWindow();
         // game loop
         while(play) {
             // update NPC positions
@@ -30,6 +32,11 @@ public class Main {
 
             play = false; // exit condition
         }
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+
     }
 
     private void createGameWindow() {
@@ -56,6 +63,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main();
+        launch(args);
     }
 }
