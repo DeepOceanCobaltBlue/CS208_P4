@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -20,12 +21,68 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 
 public class mainDriver extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) {
+        // Init rooms
+        ArrayList<Pane> roomList = new ArrayList<>();
+        Pane topLeftRoom = new Pane();
+        Pane topRightRoom = new Pane();
+        Pane bottomLeftRoom = new Pane();
+        Pane bottomRightRoom = new Pane();
+        roomList.add(topLeftRoom);
+        roomList.add(topRightRoom);
+        roomList.add(bottomLeftRoom);
+        roomList.add(bottomRightRoom);
+
+        for(Pane p : roomList) {
+            p.setPrefSize(400, 300);
+            p.setMaxSize(400, 300);
+            p.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
+        }
+
+        // Init teleporters
+        ArrayList<Teleporter> teleList = new ArrayList<>();
+        Teleporter teleport1 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        Teleporter teleport2 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        Teleporter teleport3 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        Teleporter teleport4 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        teleList.add(teleport1);
+        teleList.add(teleport2);
+        teleList.add(teleport3);
+        teleList.add(teleport4);
+
+        for(Teleporter tele : teleList) {
+            tele.setLayoutX(tele.getCenterX());
+            tele.setLayoutY(tele.getCenterY());
+        }
+
+        // init players
+        int numRunner = 1;
+        Random rng = new Random();
+        ArrayList<Runner> runnerList = new ArrayList<>();
+        for(int i = 0; i < numRunner; i++) {
+            Runner r = new Runner(50, 25, 10, Color.RED, i+1);
+            runnerList.add(r);
+
+            int dir = rng.nextInt(3);
+            if(dir > 1) {
+                r.setSpeedX(r.getSpeedX()*-1);
+            }
+            dir = rng.nextInt()*2;
+            if(dir > 1) {
+                r.setSpeedY(r.getSpeedX()*-1);
+            }
+
+
+            r.setLayoutX(r.getCenterX());
+            r.setLayoutY(r.getCenterY());
+        }
 
         //basePane is the highest level pane, the root node of the scene graph
         Pane basePane = new Pane();
@@ -50,61 +107,31 @@ public class mainDriver extends Application {
         topRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(topRoomsContainer);
 
-        //topLeftRoom
-        Pane topLeftRoom = new Pane();
-        topLeftRoom.setPrefSize(400, 300);
-        topLeftRoom.setMaxSize(400, 300);
-        topLeftRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-
-        //creating/adding the first 'teleport' and a first 'player' to the topLeftRoom as children
-        Runner player1 = new Runner(26, 26, 10, Color.RED, 13);
-        player1.setLayoutX(player1.getCenterX());
-        player1.setLayoutY(player1.getCenterY());
-        Teleporter teleport1 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        teleport1.setLayoutX(teleport1.getCenterX());
-        teleport1.setLayoutY(teleport1.getCenterY());
-        topLeftRoom.getChildren().addAll(player1, teleport1);
-
-        //topRightRoom with just a teleport currently
-        Pane topRightRoom = new Pane();
-        topRightRoom.setPrefSize(400, 300);
-        topRightRoom.setMaxSize(400, 300);
-        topRightRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-        Teleporter teleport2 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        teleport2.setLayoutX(teleport2.getCenterX());
-        teleport2.setLayoutY(teleport2.getCenterY());
-        topRightRoom.getChildren().add(teleport2);
-
-        //adding the two top rooms to topRoomsContainer
-        topRoomsContainer.getChildren().addAll(topLeftRoom, topRightRoom);
-
         //creating the horizontal container for the bottom left and bottom right rooms and adding it to vertContainer
         HBox bottomRoomsContainer = new HBox();
         bottomRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(bottomRoomsContainer);
 
-        //creating bottom left and bottom right rooms and a teleport for each
-        Pane bottomLeftRoom = new Pane();
-        bottomLeftRoom.setPrefSize(400, 300);
-        bottomLeftRoom.setMaxSize(400, 300);
-        bottomLeftRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-        Teleporter teleport3 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        teleport3.setLayoutX(teleport3.getCenterX());
-        teleport3.setLayoutY(teleport3.getCenterY());
-        bottomLeftRoom.getChildren().add(teleport3);
-
-        Pane bottomRightRoom = new Pane();
-        bottomRightRoom.setPrefSize(400, 300);
-        bottomRightRoom.setMaxSize(400, 300);
-        bottomRightRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
-        Teleporter teleport4 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        teleport4.setLayoutX(teleport4.getCenterX());
-        teleport4.setLayoutY(teleport4.getCenterY());
-        bottomRightRoom.getChildren().add(teleport4);
-
+        //adding the two top rooms to topRoomsContainer
+        topRoomsContainer.getChildren().addAll(topLeftRoom, topRightRoom);
         //adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
+        // add players to rooms
+        int roomIndex = 0;
+        for(Runner runr : runnerList) {
+            roomList.get(roomIndex).getChildren().add(runr);
+            roomIndex++;
+            if(roomIndex == 4) {
+                roomIndex = 0;
+            }
+        }
+
+        // add teleporters to rooms
+        topLeftRoom.getChildren().add(teleport1);
+        topRightRoom.getChildren().add(teleport2);
+        bottomLeftRoom.getChildren().add(teleport3);
+        bottomRightRoom.getChildren().add(teleport4);
 
         //event handler for the start button
         startButton.setOnAction(e -> {
@@ -112,35 +139,45 @@ public class mainDriver extends Application {
             //creating the timeline for the game loop
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
 
-                //player1 starting position and movement velocity
-                double x = 26;
-                double y = 26;
-                double dx = 3; //velocity in the x direction
-                double dy = 0; //velocity in the y direction
 
                 @Override
                 public void handle(ActionEvent t) {
 
-                    System.out.println(t.getEventType()); //for debugging
+                    //System.out.println(t.getEventType()); //for debugging
+                    Bounds bounds = topLeftRoom.getLayoutBounds();
 
+                    for(Runner runner : runnerList) {
+                        /*
+                        //runner starting position and movement velocity
+                        double x = runner.getLayoutX();
+                        double y = runner.getLayoutY();
+                        double dx = runner.getSpeedX(); //velocity in the x direction
+                        double dy = runner.getSpeedY(); //velocity in the y direction
+                         */
 
-                    //move the ball
-                    x += dx;
-                    y += dy;
-                    player1.setLayoutX(x);
-                    player1.setLayoutY(y);
+                        // update position
+                        runner.setLayoutX(runner.getLayoutX() + runner.getSpeedX());
+                        runner.setLayoutY(runner.getLayoutY() + runner.getSpeedY());
 
-                    //check if the ball hits a 'wall' and if so, reverse the velocity
-                    //if the ball reaches the left or right border make the step negative
-                    if (x > 375 || (x - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
-                        dx = -dx;
+                        //check if runner hits a 'wall' and if so, "bounce" by reversing speed sign(+ or -)
+                        //if the ball reaches the left or right border make the step negative
+                        if (runner.getLayoutX() > (bounds.getMaxX() - (2*runner.getRadius())) ) {
+                            runner.setSpeedX(runner.getSpeedX() * -1);
+                        }
+                        if(runner.getLayoutX() < (bounds.getMinX() - (2*runner.getRadius()))  ) {
+                            runner.setSpeedX(runner.getSpeedX() * -1);
+                        }
+
+                        //if the ball reaches the bottom or top border make the step negative
+                        if (runner.getLayoutY() >= (bounds.getMaxY() - (2*runner.getRadius()))  ) {
+                            runner.setSpeedY(runner.getSpeedY() * -1);
+                        }
+                        if(runner.getLayoutY() <= (bounds.getMinY() - (2*runner.getRadius()))  ) {
+                            runner.setSpeedY(runner.getSpeedY() * -1);
+                        }
                     }
 
-                    //if the ball reaches the bottom or top border make the step negative
-                    if (y > 275 || (y - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
-                        dy = -dy;
-                    }
-
+/*
                     //check if the ball hits a teleport and if so, teleport it to the next room
                     if (player1.getBoundsInParent().intersects(teleport1.getBoundsInParent())) {
 
@@ -169,6 +206,8 @@ public class mainDriver extends Application {
                         topLeftRoom.getChildren().add(player1);
                         player1.relocate(25, 25);
                     }
+
+ */
 
 
                 }
