@@ -11,8 +11,8 @@ public class Tagger extends NPC {
         super.setFill(Color.GREEN);
     }
 
-    public Tagger(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor, ID);
+    public Tagger(double centerX, double centerY, double rad, Paint inColor, int ID) {
+        super(centerX, centerY, rad, inColor, ID);
         super.setSpeedX(2);
         super.setSpeedY(2);
         super.setCanTeleport(false);

@@ -17,8 +17,8 @@ public class Runner extends NPC {
         super.setFill(javafx.scene.paint.Color.BLUE);
     }
 
-    public Runner(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor, ID);
+    public Runner(double centerX, double centerY, double rad, Paint inColor, int ID) {
+        super(centerX, centerY, rad, inColor, ID);
         super.setSpeedX(2);
         super.setSpeedY(2);
         super.setCanTeleport(true);

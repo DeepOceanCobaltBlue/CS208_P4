@@ -12,17 +12,17 @@ public abstract class NPC extends GameItem {
         this.canTeleport = false;
     }
 
-    public NPC(double startX, double startY, double rad, Paint inColor, int ID) {
+    public NPC(double centerX, double centerY, double rad, Paint inColor, int ID) {
         // public GameItem(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor, ID);
+        super(centerX, centerY, rad, inColor, ID);
         this.speedX = 1;
         this.speedY = 1;
         this.canTeleport = false;
 
     }
-    public NPC(double startX, double startY, double rad, Paint inColor, int ID, int speedX, int speedY, boolean tele) {
+    public NPC(double centerX, double centerY, double rad, Paint inColor, int ID, int speedX, int speedY, boolean tele) {
         // public GameItem(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor, ID);
+        super(centerX, centerY, rad, inColor, ID);
         this.speedX = speedX;
         this.speedY = speedY;
         this.canTeleport = tele;

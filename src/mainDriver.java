@@ -63,18 +63,20 @@ public class mainDriver extends Application {
         }
 
         // init players
-        int numRunner = 1;
+        int numRunner = 1000;
         Random rng = new Random();
         ArrayList<Runner> runnerList = new ArrayList<>();
         for(int i = 0; i < numRunner; i++) {
-            Runner r = new Runner(50, 25, 10, Color.RED, i+1);
+            Runner r = new Runner(25, 25, 10, Color.RED, i+1);
+            r.setCenterX(rng.nextInt(187)+7);
+            r.setCenterY(rng.nextInt(134)+7);
             runnerList.add(r);
 
             int dir = rng.nextInt(3);
             if(dir > 1) {
                 r.setSpeedX(r.getSpeedX()*-1);
             }
-            dir = rng.nextInt()*2;
+            dir = rng.nextInt(3);
             if(dir > 1) {
                 r.setSpeedY(r.getSpeedX()*-1);
             }
@@ -143,37 +145,21 @@ public class mainDriver extends Application {
                 @Override
                 public void handle(ActionEvent t) {
 
-                    //System.out.println(t.getEventType()); //for debugging
-                    Bounds bounds = topLeftRoom.getLayoutBounds();
-
                     for(Runner runner : runnerList) {
-                        /*
-                        //runner starting position and movement velocity
-                        double x = runner.getLayoutX();
-                        double y = runner.getLayoutY();
-                        double dx = runner.getSpeedX(); //velocity in the x direction
-                        double dy = runner.getSpeedY(); //velocity in the y direction
-                         */
-
-                        // update position
+                        //move the ball
                         runner.setLayoutX(runner.getLayoutX() + runner.getSpeedX());
                         runner.setLayoutY(runner.getLayoutY() + runner.getSpeedY());
 
-                        //check if runner hits a 'wall' and if so, "bounce" by reversing speed sign(+ or -)
-                        //if the ball reaches the left or right border make the step negative
-                        if (runner.getLayoutX() > (bounds.getMaxX() - (2*runner.getRadius())) ) {
-                            runner.setSpeedX(runner.getSpeedX() * -1);
-                        }
-                        if(runner.getLayoutX() < (bounds.getMinX() - (2*runner.getRadius()))  ) {
-                            runner.setSpeedX(runner.getSpeedX() * -1);
+                        Bounds bounds = topLeftRoom.getLayoutBounds();
+                        if (    runner.getLayoutX() <= (bounds.getMinX() + ((runner.getRadius()) - runner.getCenterX())) ||
+                                runner.getLayoutX() >= (bounds.getMaxX() - ((runner.getRadius()) + runner.getCenterX()))  ) {
+                            runner.setSpeedX(runner.getSpeedX()*-1);
                         }
 
                         //if the ball reaches the bottom or top border make the step negative
-                        if (runner.getLayoutY() >= (bounds.getMaxY() - (2*runner.getRadius()))  ) {
-                            runner.setSpeedY(runner.getSpeedY() * -1);
-                        }
-                        if(runner.getLayoutY() <= (bounds.getMinY() - (2*runner.getRadius()))  ) {
-                            runner.setSpeedY(runner.getSpeedY() * -1);
+                        if (    runner.getLayoutY() <= (bounds.getMinY() + ((runner.getRadius()) - runner.getCenterY())) ||
+                                runner.getLayoutY() >= (bounds.getMaxY() - ((runner.getRadius()) + runner.getCenterY()))  ) {
+                            runner.setSpeedY(runner.getSpeedY()*-1);
                         }
                     }
 
