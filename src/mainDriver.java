@@ -121,6 +121,9 @@ public class mainDriver extends Application {
                 @Override
                 public void handle(ActionEvent t) {
 
+                    System.out.println(t.getEventType()); //for debugging
+
+
                     //move the ball
                     x += dx;
                     y += dy;
@@ -141,12 +144,31 @@ public class mainDriver extends Application {
                     //check if the ball hits a teleport and if so, teleport it to the next room
                     if (player1.getBoundsInParent().intersects(teleport1.getBoundsInParent())) {
 
+                        topLeftRoom.getChildren().remove(player1);
                         topRightRoom.getChildren().add(player1);
                         player1.relocate(25, 25);
-                        //player1.setLayoutY(teleport2.getLayoutY());
-
                     }
 
+                    if (player1.getBoundsInParent().intersects(teleport2.getBoundsInParent())) {
+
+                        topRightRoom.getChildren().remove(player1);
+                        bottomLeftRoom.getChildren().add(player1);
+                        player1.relocate(25, 25);
+                    }
+
+                    if (player1.getBoundsInParent().intersects(teleport3.getBoundsInParent())) {
+
+                        bottomLeftRoom.getChildren().remove(player1);
+                        bottomRightRoom.getChildren().add(player1);
+                        player1.relocate(25, 25);
+                    }
+
+                    if (player1.getBoundsInParent().intersects(teleport4.getBoundsInParent())) {
+
+                        bottomRightRoom.getChildren().remove(player1);
+                        topLeftRoom.getChildren().add(player1);
+                        player1.relocate(25, 25);
+                    }
 
 
                 }
