@@ -11,6 +11,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -60,7 +61,7 @@ public class mainDriver extends Application {
         topLeftRoom.setStyle("-fx-background-color: #000000; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
 
         //creating/adding the first 'teleport' and a first 'player' to the topLeftRoom as children
-        Runner player1 = new Runner(26, 26, 10, Color.RED, 13);
+        Runner player1 = new Runner(12, 12, 10, Color.RED, 13);
         player1.setLayoutX(player1.getCenterX());
         player1.setLayoutY(player1.getCenterY());
         Teleporter teleport1 = new Teleporter(175, 25, 20, Color.BLUE, 1);
@@ -139,8 +140,8 @@ public class mainDriver extends Application {
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
 
                 //player1 starting position and movement velocity
-                double dx = 3; //velocity in the x direction
-                double dy = 0; //velocity in the y direction
+                double dx = 4; //velocity in the x direction
+                double dy = 2; //velocity in the y direction
 
                 @Override
                 public void handle(ActionEvent t) {
@@ -148,14 +149,27 @@ public class mainDriver extends Application {
                     //move the ball
                     player1.setLayoutX(player1.getLayoutX() + dx);
                     player1.setLayoutY(player1.getLayoutY() + dy);
+
 //                    player1.setLayoutX(x);
 //                    player1.setLayoutY(y);
 
-                    //check if the ball hits a 'wall' and if so, reverse the velocity
-                    //if the ball reaches the left or right border make the step negative
-                    if (player1.getLayoutX() > 375 || (player1.getLayoutX() - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
+
+                    Bounds bounds = topLeftRoom.getLayoutBounds();
+                    System.out.println("bounds: " + bounds);
+                    System.out.println(bounds.getMaxX() + " " + bounds.getMaxY());
+                    if (player1.getLayoutX() <= (bounds.getMinX() + player1.getRadius()) ||
+                            player1.getLayoutX() >= (bounds.getMaxX() - player1.getRadius())) {
                         dx = -dx;
                     }
+
+                    //check if the ball hits a 'wall' and if so, reverse the velocity
+                    //if the ball reaches the left or right border make the step negative
+                    /*if (player1.getLayoutX() > 375 || (player1.getLayoutX() - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
+                        dx = -dx;
+                    }*/
+/*                    if (player1.intersects(topLeftRoom.getBoundsInLocal())) {
+                        dx = -dx;
+                    }*/
 
                     //if the ball reaches the bottom or top border make the step negative
                     if (player1.getLayoutY() > 275 || (player1.getLayoutY() - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
