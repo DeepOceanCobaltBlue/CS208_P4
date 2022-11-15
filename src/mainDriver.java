@@ -5,6 +5,7 @@
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -105,43 +106,65 @@ public class mainDriver extends Application {
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
 
+        //event handler for the start button
         startButton.setOnAction(e -> {
 
-            Timeline timeline = new Timeline( new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
+            //creating the timeline for the game loop
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
 
+                //player1 starting position and movement velocity
                 double x = 26;
                 double y = 26;
-                double dx = 1;
-                double dy = 1;
+                double dx = 3; //velocity in the x direction
+                double dy = 0; //velocity in the y direction
 
                 @Override
                 public void handle(ActionEvent t) {
+
                     //move the ball
                     x += dx;
                     y += dy;
                     player1.setLayoutX(x);
                     player1.setLayoutY(y);
 
-                    //check if the ball moves over the bounds
+                    //check if the ball hits a 'wall' and if so, reverse the velocity
                     //if the ball reaches the left or right border make the step negative
-                    if(x > 375 || (x - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
+                    if (x > 375 || (x - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
                         dx = -dx;
                     }
 
                     //if the ball reaches the bottom or top border make the step negative
-                    if(y > 275 || (y- (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
+                    if (y > 275 || (y - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
                         dy = -dy;
                     }
+
+                    //check if the ball hits a teleport and if so, teleport it to the next room
+                    if (player1.getBoundsInParent().intersects(teleport1.getBoundsInParent())) {
+
+                        topRightRoom.getChildren().add(player1);
+                        player1.relocate(25, 25);
+                        //player1.setLayoutY(teleport2.getLayoutY());
+
+                    }
+
+
+
                 }
             }));
 
-
+            //set the timeline to loop indefinitely
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
 
+        });//startButton
 
+        //event handler for the exit button
+        exitButton.setOnAction(e -> {
+            Platform.exit();
+            System.exit(0);
         });
+
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Game of Tag!");
