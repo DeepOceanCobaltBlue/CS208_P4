@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -63,7 +64,7 @@ public class mainDriver extends Application {
         }
 
         // init players
-        int numRunner = 1000;
+        int numRunner = 100;
         Random rng = new Random();
         ArrayList<Runner> runnerList = new ArrayList<>();
         for(int i = 0; i < numRunner; i++) {
@@ -122,6 +123,20 @@ public class mainDriver extends Application {
         // add players to rooms
         int roomIndex = 0;
         for(Runner runr : runnerList) {
+            switch(roomIndex) {
+                case 0:
+                    runr.setFill(Color.AQUA);
+                    break;
+                case 1:
+                    runr.setFill(Color.FORESTGREEN);
+                    break;
+                case 2:
+                    runr.setFill(Color.CRIMSON);
+                    break;
+                case 3:
+                    runr.setFill(Color.DARKVIOLET);
+                    break;
+            }
             roomList.get(roomIndex).getChildren().add(runr);
             roomIndex++;
             if(roomIndex == 4) {
@@ -145,12 +160,14 @@ public class mainDriver extends Application {
                 @Override
                 public void handle(ActionEvent t) {
 
+                    Bounds bounds = topLeftRoom.getLayoutBounds();
+                    ArrayList<Runner> teleportMe = new ArrayList<>();
+
                     for(Runner runner : runnerList) {
-                        //move the ball
+                        // ___ update position ___
                         runner.setLayoutX(runner.getLayoutX() + runner.getSpeedX());
                         runner.setLayoutY(runner.getLayoutY() + runner.getSpeedY());
 
-                        Bounds bounds = topLeftRoom.getLayoutBounds();
                         if (    runner.getLayoutX() <= (bounds.getMinX() + ((runner.getRadius()) - runner.getCenterX())) ||
                                 runner.getLayoutX() >= (bounds.getMaxX() - ((runner.getRadius()) + runner.getCenterX()))  ) {
                             runner.setSpeedX(runner.getSpeedX()*-1);
@@ -161,40 +178,59 @@ public class mainDriver extends Application {
                                 runner.getLayoutY() >= (bounds.getMaxY() - ((runner.getRadius()) + runner.getCenterY()))  ) {
                             runner.setSpeedY(runner.getSpeedY()*-1);
                         }
+
+                        // ___ check for collisions ___
+                        for(Teleporter tele : teleList) {
+                            if (Circle.intersect(runner, tele).getBoundsInLocal().getWidth() != -1) {
+                                // if intersect shape contains any width => intersection => move Runner
+                                teleportMe.add(runner);
+                            }
+                        }
+
                     }
 
-/*
-                    //check if the ball hits a teleport and if so, teleport it to the next room
-                    if (player1.getBoundsInParent().intersects(teleport1.getBoundsInParent())) {
+                    if(teleportMe.size() > 0) {
+                        // for each runner in teleportMe
+                        for (int b = 0; b < teleportMe.size(); b++) {
+                            boolean teleportComplete = false;
 
-                        topLeftRoom.getChildren().remove(player1);
-                        topRightRoom.getChildren().add(player1);
-                        player1.relocate(25, 25);
+                            // for each room
+                            for (int a = 3; a >= 0; a--) {
+                                    // check if runner is within room
+                                if (roomList.get(a).getChildren().contains(teleportMe.get(b))) {
+                                    if(!teleportComplete) {
+                                        // remove runner from room
+                                        roomList.get(a).getChildren().remove(teleportMe.get(b));
+                                        // add runner to next room
+                                        switch (a) {
+                                            case 0:
+                                                roomList.get(1).getChildren().add(teleportMe.get(b));
+                                                break;
+
+                                            case 1:
+                                                roomList.get(2).getChildren().add(teleportMe.get(b));
+                                                break;
+
+                                            case 2:
+                                                roomList.get(3).getChildren().add(teleportMe.get(b));
+                                                break;
+
+                                            case 3:
+                                                roomList.get(0).getChildren().add(teleportMe.get(b));
+                                                break;
+                                        }
+
+                                        // starting position in new room
+                                        teleportComplete = true; // only move each runner once
+                                        teleportMe.get(b).setLayoutX(25);
+                                        teleportMe.get(b).setLayoutY(25);
+                                    }
+                                }
+                            }
+                        }
+                        teleportMe.clear();
+
                     }
-
-                    if (player1.getBoundsInParent().intersects(teleport2.getBoundsInParent())) {
-
-                        topRightRoom.getChildren().remove(player1);
-                        bottomLeftRoom.getChildren().add(player1);
-                        player1.relocate(25, 25);
-                    }
-
-                    if (player1.getBoundsInParent().intersects(teleport3.getBoundsInParent())) {
-
-                        bottomLeftRoom.getChildren().remove(player1);
-                        bottomRightRoom.getChildren().add(player1);
-                        player1.relocate(25, 25);
-                    }
-
-                    if (player1.getBoundsInParent().intersects(teleport4.getBoundsInParent())) {
-
-                        bottomRightRoom.getChildren().remove(player1);
-                        topLeftRoom.getChildren().add(player1);
-                        player1.relocate(25, 25);
-                    }
-
- */
-
 
                 }
             }));
@@ -221,7 +257,10 @@ public class mainDriver extends Application {
 
     }
 
+
+
     public static void main(String[] args) {
         launch();
     }
+
 }
