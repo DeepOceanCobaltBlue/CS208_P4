@@ -139,31 +139,26 @@ public class mainDriver extends Application {
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
 
                 //player1 starting position and movement velocity
-                double x = 26;
-                double y = 26;
                 double dx = 3; //velocity in the x direction
                 double dy = 0; //velocity in the y direction
 
                 @Override
                 public void handle(ActionEvent t) {
 
-//                    System.out.println(t.getEventType()); //for debugging
-
-
                     //move the ball
-                    x += dx;
-                    y += dy;
-                    player1.setLayoutX(x);
-                    player1.setLayoutY(y);
+                    player1.setLayoutX(player1.getLayoutX() + dx);
+                    player1.setLayoutY(player1.getLayoutY() + dy);
+//                    player1.setLayoutX(x);
+//                    player1.setLayoutY(y);
 
                     //check if the ball hits a 'wall' and if so, reverse the velocity
                     //if the ball reaches the left or right border make the step negative
-                    if (x > 375 || (x - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
+                    if (player1.getLayoutX() > 375 || (player1.getLayoutX() - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
                         dx = -dx;
                     }
 
                     //if the ball reaches the bottom or top border make the step negative
-                    if (y > 275 || (y - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
+                    if (player1.getLayoutY() > 275 || (player1.getLayoutY() - (player1.getBoundsInLocal().getWidth() / 2)) < 0) {
                         dy = -dy;
                     }
 
@@ -176,18 +171,20 @@ public class mainDriver extends Application {
                             topRightRoom.getChildren().add(player1);
                             npcMap.replace(player1, topLeftRoom, topRightRoom);
 //                            npcMap.put(player1, topRightRoom);
-                        } else {
+                        } /*else {
                             topLeftRoom.getChildren().add(player1);
                             npcMap.put(player1, topLeftRoom);
-                        }
-                        topRightRoom.getChildren().add(player1);
+                        }*/
                         player1.relocate(25, 25);
                     }
 
                     if (player1.getBoundsInParent().intersects(teleport2.getBoundsInParent())) {
 
-                        topRightRoom.getChildren().remove(player1);
-                        bottomLeftRoom.getChildren().add(player1);
+                        if (npcMap.get(player1) == topRightRoom) {
+                            topRightRoom.getChildren().remove(player1);
+                            bottomLeftRoom.getChildren().add(player1);
+                            npcMap.replace(player1, topRightRoom, bottomLeftRoom);
+                        }
                         player1.relocate(25, 25);
                     }
 
