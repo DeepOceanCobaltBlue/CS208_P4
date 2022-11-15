@@ -6,6 +6,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -63,7 +66,10 @@ public class mainDriver extends Application {
         Teleporter teleport1 = new Teleporter(175, 25, 20, Color.BLUE, 1);
         teleport1.setLayoutX(teleport1.getCenterX());
         teleport1.setLayoutY(teleport1.getCenterY());
-        topLeftRoom.getChildren().addAll(player1, teleport1);
+
+
+        Tagger tagger1 = new Tagger(25, 75, 15, Color.GREEN, 1);
+        topLeftRoom.getChildren().addAll(player1, teleport1, tagger1);
 
         //topRightRoom with just a teleport currently
         Pane topRightRoom = new Pane();
@@ -106,6 +112,26 @@ public class mainDriver extends Application {
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
 
+        /**
+         * ObservableMap testing
+         * Key is the NPC object whether it be runner or tagger, value is the room it is in (Pane)
+         * eventListener prints to console any changes to the map for debugging
+         */
+        ObservableMap<NPC, Pane> npcMap = FXCollections.observableHashMap();
+        npcMap.put(player1, topLeftRoom);
+        npcMap.put(tagger1, topLeftRoom);
+
+        npcMap.addListener((MapChangeListener<NPC, Pane>) change -> {
+            if (change.wasAdded()) {
+                System.out.println("Added: " + change.getKey() + " -> " + change.getValueAdded());
+            }
+            if (change.wasRemoved()) {
+                System.out.println("Removed: " + change.getKey() + " -> " + change.getValueRemoved());
+            }
+            System.out.println();
+        });
+
+
         //event handler for the start button
         startButton.setOnAction(e -> {
 
@@ -121,7 +147,7 @@ public class mainDriver extends Application {
                 @Override
                 public void handle(ActionEvent t) {
 
-                    System.out.println(t.getEventType()); //for debugging
+//                    System.out.println(t.getEventType()); //for debugging
 
 
                     //move the ball
@@ -144,7 +170,16 @@ public class mainDriver extends Application {
                     //check if the ball hits a teleport and if so, teleport it to the next room
                     if (player1.getBoundsInParent().intersects(teleport1.getBoundsInParent())) {
 
-                        topLeftRoom.getChildren().remove(player1);
+
+                        if (npcMap.get(player1) == topLeftRoom) {
+                            topLeftRoom.getChildren().remove(player1);
+                            topRightRoom.getChildren().add(player1);
+                            npcMap.replace(player1, topLeftRoom, topRightRoom);
+//                            npcMap.put(player1, topRightRoom);
+                        } else {
+                            topLeftRoom.getChildren().add(player1);
+                            npcMap.put(player1, topLeftRoom);
+                        }
                         topRightRoom.getChildren().add(player1);
                         player1.relocate(25, 25);
                     }
