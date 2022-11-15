@@ -178,6 +178,7 @@ public class mainDriver extends Application {
                         player1.relocate(25, 25);
                     }
 
+
                     if (player1.getBoundsInParent().intersects(teleport2.getBoundsInParent())) {
 
                         if (npcMap.get(player1) == topRightRoom) {
@@ -185,21 +186,26 @@ public class mainDriver extends Application {
                             bottomLeftRoom.getChildren().add(player1);
                             npcMap.replace(player1, topRightRoom, bottomLeftRoom);
                         }
-                        player1.relocate(25, 25);
+//                        player1.relocate(25, 25);
                     }
 
                     if (player1.getBoundsInParent().intersects(teleport3.getBoundsInParent())) {
 
-                        bottomLeftRoom.getChildren().remove(player1);
-                        bottomRightRoom.getChildren().add(player1);
+                        if (npcMap.get(player1) == bottomLeftRoom) {
+                            bottomLeftRoom.getChildren().remove(player1);
+                            bottomRightRoom.getChildren().add(player1);
+                            npcMap.replace(player1, bottomLeftRoom, bottomRightRoom);
+                        }
                         player1.relocate(25, 25);
                     }
 
                     if (player1.getBoundsInParent().intersects(teleport4.getBoundsInParent())) {
 
-                        bottomRightRoom.getChildren().remove(player1);
-                        topLeftRoom.getChildren().add(player1);
-                        player1.relocate(25, 25);
+                        if (npcMap.get(player1) == bottomRightRoom) {
+                            bottomRightRoom.getChildren().remove(player1);
+                            topLeftRoom.getChildren().add(player1);
+                            npcMap.replace(player1, bottomRightRoom, topLeftRoom);
+                        }
                     }
 
 
