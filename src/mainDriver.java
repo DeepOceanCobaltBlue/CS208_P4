@@ -128,7 +128,7 @@ public class mainDriver extends Application {
         ToolBar toolBar = new ToolBar();
         toolBar.setPrefSize(800, 36);
         Button startButton = new Button("Start Game");
-        Button exitButton = new Button("Exit Game"); //TODO implement this
+        Button exitButton = new Button("Exit Game");
         exitButton.setTranslateX(630);
         toolBar.getItems().addAll(startButton, exitButton);
         vertContainer.getChildren().add(toolBar);
