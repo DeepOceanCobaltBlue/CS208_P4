@@ -1,7 +1,17 @@
-/* mainDriver.java - main driver for the game, builds the board and handles the game logic.
+/* CS208.004 Data Structures
+ * P4 - Hashing
+ * mainDriver.java - Driver program for the digital game of 'Tag'. Uses javaFX to build and display the game
+ * animations, and uses a hash table to store the players and their locations.
+ *
+ * @author Kevin Pinto - Wrote the game board and components in javaFX, the core game loop via javaFX's animation
+ * Timelines, and initial player movement/collision detection. Also wrote the 'win' and 'lose' conditions, and the
+ * initial implementation of the hash map.
+ *
+ * @modified by Christopher Peters
  *
  * */
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -11,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -26,6 +37,7 @@ import java.util.Random;
 
 public class mainDriver extends Application {
 
+
     @Override
     public void start(Stage primaryStage) {
         // Init rooms
@@ -39,6 +51,7 @@ public class mainDriver extends Application {
         roomList.add(bottomLeftRoom);
         roomList.add(bottomRightRoom);
 
+        // styling rooms
         for (Pane p : roomList) {
             p.setPrefSize(400, 300);
             p.setMaxSize(400, 300);
@@ -113,16 +126,16 @@ public class mainDriver extends Application {
             t.setLayoutY(t.getCenterY());
         }
 
-        //basePane is the highest level pane, the root node of the scene graph
+        // basePane is the highest level pane, the root node of the scene graph
         Pane basePane = new Pane();
         Scene scene = new Scene(basePane, 800, 700);
 
-        //vertContainer is the vertical container for the toolbar and the two horizontal containers
+        // vertContainer is the vertical container for the toolbar and the two horizontal containers
         VBox vertContainer = new VBox();
         vertContainer.setPrefSize(800, 636);
         basePane.getChildren().add(vertContainer);
 
-        //toolBar at the top of the screen, contains the start and exit buttons
+        // toolBar at the top of the screen, contains the start and exit buttons
         ToolBar toolBar = new ToolBar();
         toolBar.setPrefSize(800, 36);
         Button startButton = new Button("Start Game");
@@ -131,19 +144,24 @@ public class mainDriver extends Application {
         toolBar.getItems().addAll(startButton, exitButton);
         vertContainer.getChildren().add(toolBar);
 
-        //topRoomsContainer is the horizontal container for the top left and top right rooms
+        // adding a label to display the elapsed time on the toolbar
+        Label timeLabel = new Label("Time elapsed: 0");
+        timeLabel.setTranslateX(200);
+        toolBar.getItems().add(timeLabel);
+
+        // topRoomsContainer is the horizontal container for the top left and top right rooms
         HBox topRoomsContainer = new HBox();
         topRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(topRoomsContainer);
 
-        //creating the horizontal container for the bottom left and bottom right rooms and adding it to vertContainer
+        // creating the horizontal container for the bottom left and bottom right rooms and adding it to vertContainer
         HBox bottomRoomsContainer = new HBox();
         bottomRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(bottomRoomsContainer);
 
-        //adding the two top rooms to topRoomsContainer
+        // adding the two top rooms to topRoomsContainer
         topRoomsContainer.getChildren().addAll(topLeftRoom, topRightRoom);
-        //adding the two bottom rooms to bottomRoomsContainer
+        // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
         // add players to rooms by cycling through rooms
@@ -191,7 +209,36 @@ public class mainDriver extends Application {
         //event handler for the start button
         startButton.setOnAction(e -> {
 
+            // prevents the user from starting the game multiple times
             startButton.setDisable(true);
+
+/**
+ * Creating a timer to track elapsed time and display it on the game board.
+ */
+            final double[] time = {0};
+            Timeline timer = new Timeline(new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent ae) {
+                    time[0]++;
+                    timeLabel.setText("Time elapsed: " + time[0] / 10); // displays as 0.0
+                }
+            }));
+
+            timer.setCycleCount(Timeline.INDEFINITE);
+            timer.play();
+
+      /*
+        SECOND TIMER IMPLEMENTATION
+
+       double startTime = System.currentTimeMillis();
+            new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    double elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+                    timeLabel.setText("Time elapsed: " + elapsedTime); // displays as 0.000
+                }
+            }.start();*/
+
 
             //creating the timeline for the game loop
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
@@ -275,12 +322,10 @@ public class mainDriver extends Application {
                                                 break;
                                         }
 
-                                            // don't teleport the same runner twice
-                                            teleportComplete = true;
-                                            // starting position in new room
-                                            teleportMe.get(b).setLayoutX(25);
-
-//                                        teleportMe.get(b).setLayoutY(25);
+                                        // don't teleport the same runner twice
+                                        teleportComplete = true;
+                                        // starting position in new room
+                                        teleportMe.get(b).setLayoutX(25);
                                     }
                                 }
                             }
