@@ -6,8 +6,12 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -242,6 +246,7 @@ public class mainDriver extends Application {
 
                     }
 
+
                     // if there is a runner to teleport
                     if(teleportMe.size() > 0) {
 
@@ -275,11 +280,14 @@ public class mainDriver extends Application {
                                                 break;
                                         }
 
-                                        // don't teleport the same runner twice
+                        if (npcMap.get(player1) == topRightRoom) {
+                                            // don't teleport the same runner twice
                                         teleportComplete = true;
-                                        // starting position in new room
+                                            // starting position in new room
                                         teleportMe.get(b).setLayoutX(25);
-                                        teleportMe.get(b).setLayoutY(25);
+                            npcMap.replace(player1, topRightRoom, bottomLeftRoom);
+                        }
+//                                        teleportMe.get(b).setLayoutY(25);
                                     }
                                 }
                             }
