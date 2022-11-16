@@ -44,7 +44,7 @@ public class mainDriver extends Application {
         for(Pane p : roomList) {
             p.setPrefSize(400, 300);
             p.setMaxSize(400, 300);
-            p.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ff2a21; -fx-border-width: 2px; " + "-fx-border-style: solid;");
+            p.setStyle("-fx-background-color: #ffffff; -fx-border-color: rgb(0,0,0); -fx-border-width: 2px; " + "-fx-border-style: solid;");
         }
 
         // Init teleporters
@@ -68,11 +68,15 @@ public class mainDriver extends Application {
         Random rng = new Random();
         ArrayList<Runner> runnerList = new ArrayList<>();
         for(int i = 0; i < numRunner; i++) {
+            // create and add runner to list
             Runner r = new Runner(25, 25, 10, Color.RED, i+1);
-            r.setCenterX(rng.nextInt(187)+7);
-            r.setCenterY(rng.nextInt(134)+7);
             runnerList.add(r);
 
+            // randomize starting position
+            r.setCenterX(rng.nextInt(187)+7);
+            r.setCenterY(rng.nextInt(134)+7);
+
+            // randomize starting direction
             int dir = rng.nextInt(3);
             if(dir > 1) {
                 r.setSpeedX(r.getSpeedX()*-1);
@@ -82,9 +86,33 @@ public class mainDriver extends Application {
                 r.setSpeedY(r.getSpeedX()*-1);
             }
 
-
             r.setLayoutX(r.getCenterX());
             r.setLayoutY(r.getCenterY());
+        }
+
+        // init taggers
+        ArrayList<Tagger> taggersList = new ArrayList<>();
+        for(int c = 0; c < 4; c++) {
+            // 1 per room
+            Tagger t = new Tagger(25, 25, 10, Color.GOLDENROD, c+1);
+            taggersList.add(t);
+
+            // randomize starting position
+            t.setCenterX(rng.nextInt(187)+7);
+            t.setCenterY(rng.nextInt(134)+7);
+
+            // randomize starting direction
+            int dir2 = rng.nextInt(3);
+            if(dir2 > 1) {
+                t.setSpeedX(t.getSpeedX()*-1);
+            }
+            dir2 = rng.nextInt(3);
+            if(dir2 > 1) {
+                t.setSpeedY(t.getSpeedX()*-1);
+            }
+
+            t.setLayoutX(t.getCenterX());
+            t.setLayoutY(t.getCenterY());
         }
 
         //basePane is the highest level pane, the root node of the scene graph
@@ -100,7 +128,7 @@ public class mainDriver extends Application {
         ToolBar toolBar = new ToolBar();
         toolBar.setPrefSize(800, 36);
         Button startButton = new Button("Start Game");
-        Button exitButton = new Button("Exit Game");
+        Button exitButton = new Button("Exit Game"); //TODO implement this
         exitButton.setTranslateX(630);
         toolBar.getItems().addAll(startButton, exitButton);
         vertContainer.getChildren().add(toolBar);
@@ -120,9 +148,10 @@ public class mainDriver extends Application {
         //adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
-        // add players to rooms
+        // add players to rooms by cycling through rooms
         int roomIndex = 0;
         for(Runner runr : runnerList) {
+            // each runner gets a unique color based on starting room
             switch(roomIndex) {
                 case 0:
                     runr.setFill(Color.AQUA);
@@ -150,6 +179,17 @@ public class mainDriver extends Application {
         bottomLeftRoom.getChildren().add(teleport3);
         bottomRightRoom.getChildren().add(teleport4);
 
+        // add taggers to rooms
+        topLeftRoom.getChildren().add(taggersList.get(0));
+        topRightRoom.getChildren().add(taggersList.get(1));
+        bottomLeftRoom.getChildren().add(taggersList.get(2));
+        bottomRightRoom.getChildren().add(taggersList.get(3));
+
+        // iterator List for NPC's
+        ArrayList<NPC> npcList = new ArrayList<>();
+        npcList.addAll(runnerList);
+        npcList.addAll(taggersList);
+
         //event handler for the start button
         startButton.setOnAction(e -> {
 
@@ -162,44 +202,60 @@ public class mainDriver extends Application {
 
                     Bounds bounds = topLeftRoom.getLayoutBounds();
                     ArrayList<Runner> teleportMe = new ArrayList<>();
+                    ArrayList<Runner> gotTaggedList = new ArrayList<>();
 
-                    for(Runner runner : runnerList) {
-                        // ___ update position ___
-                        runner.setLayoutX(runner.getLayoutX() + runner.getSpeedX());
-                        runner.setLayoutY(runner.getLayoutY() + runner.getSpeedY());
+                    // ___ update position ___
+                    for(NPC npc : npcList) {
+                        npc.setLayoutX(npc.getLayoutX() + npc.getSpeedX());
+                        npc.setLayoutY(npc.getLayoutY() + npc.getSpeedY());
 
-                        if (    runner.getLayoutX() <= (bounds.getMinX() + ((runner.getRadius()) - runner.getCenterX())) ||
-                                runner.getLayoutX() >= (bounds.getMaxX() - ((runner.getRadius()) + runner.getCenterX()))  ) {
-                            runner.setSpeedX(runner.getSpeedX()*-1);
+                        // if runner reaches left or right border => invert horizontal direction
+                        if (    npc.getLayoutX() <= (bounds.getMinX() + ((npc.getRadius()) - npc.getCenterX())) ||
+                                npc.getLayoutX() >= (bounds.getMaxX() - ((npc.getRadius()) + npc.getCenterX()))  ) {
+                            npc.setSpeedX(npc.getSpeedX()*-1);
                         }
 
-                        //if the ball reaches the bottom or top border make the step negative
-                        if (    runner.getLayoutY() <= (bounds.getMinY() + ((runner.getRadius()) - runner.getCenterY())) ||
-                                runner.getLayoutY() >= (bounds.getMaxY() - ((runner.getRadius()) + runner.getCenterY()))  ) {
-                            runner.setSpeedY(runner.getSpeedY()*-1);
+                        // if runner reaches the bottom or top border => invert vertical direction
+                        if (    npc.getLayoutY() <= (bounds.getMinY() + ((npc.getRadius()) - npc.getCenterY())) ||
+                                npc.getLayoutY() >= (bounds.getMaxY() - ((npc.getRadius()) + npc.getCenterY()))  ) {
+                            npc.setSpeedY(npc.getSpeedY()*-1);
                         }
 
                         // ___ check for collisions ___
                         for(Teleporter tele : teleList) {
-                            if (Circle.intersect(runner, tele).getBoundsInLocal().getWidth() != -1) {
+                            if (Circle.intersect(npc, tele).getBoundsInLocal().getWidth() != -1) {
                                 // if intersect shape contains any width => intersection => move Runner
-                                teleportMe.add(runner);
+                                if(npc.getCanTeleport()) {
+                                    teleportMe.add((Runner)npc);
+                                }
+                            }
+                        }
+
+
+                        for(Tagger tagr : taggersList) {
+                            if (Circle.intersect(npc, tagr).getBoundsInLocal().getWidth() != -1) {
+                                // if intersect shape contains any width => intersection => move Runner
+                                if(npc.getCanTeleport()) {
+                                    gotTaggedList.add((Runner)npc);
+                                }
                             }
                         }
 
                     }
 
+                    // if there is a runner to teleport
                     if(teleportMe.size() > 0) {
+
                         // for each runner in teleportMe
                         for (int b = 0; b < teleportMe.size(); b++) {
                             boolean teleportComplete = false;
 
                             // for each room
                             for (int a = 3; a >= 0; a--) {
-                                    // check if runner is within room
+                                // check if runner is within room
                                 if (roomList.get(a).getChildren().contains(teleportMe.get(b))) {
-                                    if(!teleportComplete) {
-                                        // remove runner from room
+                                    if(!teleportComplete) { // if this runner has not already teleported
+                                        // remove runner from current room
                                         roomList.get(a).getChildren().remove(teleportMe.get(b));
                                         // add runner to next room
                                         switch (a) {
@@ -220,16 +276,40 @@ public class mainDriver extends Application {
                                                 break;
                                         }
 
+                                        // don't teleport the same runner twice
+                                        teleportComplete = true;
                                         // starting position in new room
-                                        teleportComplete = true; // only move each runner once
                                         teleportMe.get(b).setLayoutX(25);
                                         teleportMe.get(b).setLayoutY(25);
                                     }
                                 }
                             }
                         }
+
+                        // clear tracker of runners that need to be teleported
                         teleportMe.clear();
 
+                    }
+
+                    // if a runner got tagged
+                    if(gotTaggedList.size() > 0) {
+
+                        // for each runner in gotTaggedList
+                        for (int d = 0; d < gotTaggedList.size(); d++) {
+                            boolean removalComplete = false;
+                            // for each room
+                            for (int e = 3; e >= 0; e--) {
+                                // find which room contains runner who got tagged
+                                if (roomList.get(e).getChildren().contains(gotTaggedList.get(d))) {
+                                    if(!removalComplete) {
+                                        // remove runner from current room
+                                        roomList.get(e).getChildren().remove(gotTaggedList.get(d));
+                                        removalComplete = true;
+                                    }
+                                }
+                            }
+                        }
+                        gotTaggedList.clear();
                     }
 
                 }
