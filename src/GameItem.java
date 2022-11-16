@@ -6,13 +6,13 @@ public abstract class GameItem extends Circle {
     public GameItem() {
         super();
     }
-    public GameItem(double startX, double startY, double rad, Paint inColor) {
-        super(startX, startY, rad, inColor);
+    public GameItem(double centerX, double centerY, double rad, Paint inColor) {
+        super(centerX, centerY, rad, inColor);
         this.numID = 0;
     }
 
-    public GameItem(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor);
+    public GameItem(double centerX, double centerY, double rad, Paint inColor, int ID) {
+        super(centerX, centerY, rad, inColor);
         this.numID = ID;
     }
 

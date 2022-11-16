@@ -1,35 +1,46 @@
 import javafx.scene.paint.Paint;
 
 public abstract class NPC extends GameItem {
-    private int speed;
+    private int speedX;
+    private int speedY;
     private boolean canTeleport;
 
     public NPC() {
         super();
-        this.speed = 1;
+        this.speedX = 1;
+        this.speedY = 1;
         this.canTeleport = false;
     }
 
-    public NPC(double startX, double startY, double rad, Paint inColor, int ID) {
+    public NPC(double centerX, double centerY, double rad, Paint inColor, int ID) {
         // public GameItem(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor, ID);
-        this.speed = 1;
+        super(centerX, centerY, rad, inColor, ID);
+        this.speedX = 1;
+        this.speedY = 1;
         this.canTeleport = false;
 
     }
-    public NPC(double startX, double startY, double rad, Paint inColor, int ID, int speed, boolean tele) {
+    public NPC(double centerX, double centerY, double rad, Paint inColor, int ID, int speedX, int speedY, boolean tele) {
         // public GameItem(double startX, double startY, double rad, Paint inColor, int ID) {
-        super(startX, startY, rad, inColor, ID);
-        this.speed = speed;
+        super(centerX, centerY, rad, inColor, ID);
+        this.speedX = speedX;
+        this.speedY = speedY;
         this.canTeleport = tele;
     }
 
-    public int getSpeed() {
-        return speed;
+    public int getSpeedX() {
+        return speedX;
     }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setSpeedX(int speed) {
+        this.speedX = speed;
+    }
+    public int getSpeedY() {
+        return speedY;
+    }
+
+    public void setSpeedY(int speed) {
+        this.speedY = speed;
     }
 
     public boolean getCanTeleport() {
