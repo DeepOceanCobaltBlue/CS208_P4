@@ -19,9 +19,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -50,9 +47,9 @@ public class mainDriver extends Application {
         // Init teleporters
         ArrayList<Teleporter> teleList = new ArrayList<>();
         Teleporter teleport1 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        Teleporter teleport2 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        Teleporter teleport3 = new Teleporter(175, 25, 20, Color.BLUE, 1);
-        Teleporter teleport4 = new Teleporter(175, 25, 20, Color.BLUE, 1);
+        Teleporter teleport2 = new Teleporter(175, 25, 20, Color.BLUE, 2);
+        Teleporter teleport3 = new Teleporter(175, 25, 20, Color.BLUE, 3);
+        Teleporter teleport4 = new Teleporter(175, 25, 20, Color.BLUE, 4);
         teleList.add(teleport1);
         teleList.add(teleport2);
         teleList.add(teleport3);
@@ -192,6 +189,8 @@ public class mainDriver extends Application {
 
         //event handler for the start button
         startButton.setOnAction(e -> {
+
+            startButton.setDisable(true);
 
             //creating the timeline for the game loop
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
