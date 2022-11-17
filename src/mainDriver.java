@@ -206,10 +206,10 @@ public class mainDriver extends Application {
         // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
-       Button invisibleButton = new Button();
-       invisibleButton.setDisable(true);
-       invisibleButton.setVisible(false);
-       vertContainer.getChildren().add(invisibleButton);
+        Button invisibleButton = new Button();
+        invisibleButton.setDisable(true);
+        invisibleButton.setVisible(false);
+        vertContainer.getChildren().add(invisibleButton);
 
         /**
          * playerRoomMap maps the runners to the room they are in.
@@ -220,12 +220,12 @@ public class mainDriver extends Application {
         GameMap<NPC, Integer> playerMap = new GameMap<>();
 
         playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
-            if(playerMap.getRoomCount(5) == 99) {
+            if (playerMap.getRoomCount(5) == 99) {
                 invisibleButton.fire();
-               // pauseButton.fire();
+                // pauseButton.fire();
                 String winner = "";
-                for(int i = 1; i < 5; i++) {
-                    if(!(playerMap.getRoom(i).equals(""))) {
+                for (int i = 1; i < 5; i++) {
+                    if (!(playerMap.getRoom(i).equals(""))) {
                         winner = playerMap.getRoom(i);
                         System.out.println(winner);
                     }
@@ -426,7 +426,6 @@ public class mainDriver extends Application {
                     if (gotTaggedList.size() > 0) {
 
 
-
                         // for each runner in gotTaggedList
                         for (int d = 0; d < gotTaggedList.size(); d++) {
                             boolean removalComplete = false;
@@ -440,6 +439,7 @@ public class mainDriver extends Application {
                                         // remove runner from playerRoomMap
                                         playerRoomMap.remove(gotTaggedList.get(d).hashCode());
                                         playerMap.put(gotTaggedList.get(d), 5);
+                                        invisibleButton.fire();
                                         removalComplete = true;
                                     }
                                 }
@@ -454,7 +454,6 @@ public class mainDriver extends Application {
             //set the timeline to loop indefinitely
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
-
 
 
             //event handler for the pause button
@@ -472,7 +471,17 @@ public class mainDriver extends Application {
 
             //event handler for the invisibleButton
             invisibleButton.setOnAction(event -> {
-
+                if (playerMap.getRoomCount(5) == 99) {
+                    timer.pause();
+                    timeline.pause();
+                    String winner = "";
+                    for (int i = 1; i < 5; i++) {
+                        if (!(playerMap.getRoom(i).equals(""))) {
+                            winner = playerMap.getRoom(i);
+                            System.out.println(winner);
+                        }
+                    }
+                }
             });
 
         });//end of start method
