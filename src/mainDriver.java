@@ -23,10 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -142,7 +139,7 @@ public class mainDriver extends Application {
 
         // vertContainer is the vertical container for the toolbar and the two horizontal containers
         VBox vertContainer = new VBox();
-        vertContainer.setPrefSize(800, 636);
+        vertContainer.setPrefSize(800, 700);
         basePane.getChildren().add(vertContainer);
 
         // toolBar at the top of the screen, contains the start and exit buttons
@@ -170,8 +167,15 @@ public class mainDriver extends Application {
         bottomRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(bottomRoomsContainer);
 
+        Text resultsText = new Text("Results: ");
+        resultsText.setFont(new Font(20));
+
+        TextArea results = new TextArea();
+        results.setPrefSize(300, 50);
+        vertContainer.getChildren().addAll(resultsText, results);
+
         VBox statContainer = new VBox();
-        statContainer.setPrefSize(400,700);
+        statContainer.setPrefSize(400, 700);
         statContainer.setLayoutX(800);
         statContainer.setSpacing(10);
         Text text1 = new Text("Top-Right count: ");
@@ -194,7 +198,7 @@ public class mainDriver extends Application {
         textArea3.setWrapText(true);
         textArea4.setPrefRowCount(10);
         textArea4.setWrapText(true);
-        statContainer.getChildren().addAll(text1,textArea1,text2,textArea2,text3,textArea3,text4,textArea4);
+        statContainer.getChildren().addAll(text1, textArea1, text2, textArea2, text3, textArea3, text4, textArea4);
         basePane.getChildren().add(statContainer);
 
         // adding the two top rooms to topRoomsContainer
@@ -202,13 +206,32 @@ public class mainDriver extends Application {
         // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
+       Button invisibleButton = new Button();
+       invisibleButton.setDisable(true);
+       invisibleButton.setVisible(false);
+       vertContainer.getChildren().add(invisibleButton);
+
         /**
          * playerRoomMap maps the runners to the room they are in.
          * Key = runner hashcode (Integer) *replace with Josue's hashcode*
          * Value = room Id (String)
          * */
         ObservableMap<Integer, String> playerRoomMap = FXCollections.observableHashMap();
-        GameMap<NPC,Integer> playerMap = new GameMap<>();
+        GameMap<NPC, Integer> playerMap = new GameMap<>();
+
+        playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
+            if(playerMap.getRoomCount(5) == 99) {
+                invisibleButton.fire();
+               // pauseButton.fire();
+                String winner = "";
+                for(int i = 1; i < 5; i++) {
+                    if(!(playerMap.getRoom(i).equals(""))) {
+                        winner = playerMap.getRoom(i);
+                        System.out.println(winner);
+                    }
+                }
+            }
+        });
 
         // add players to rooms by cycling through rooms
         int roomIndex = 0;
@@ -218,22 +241,22 @@ public class mainDriver extends Application {
                 case 0:
                     runr.setFill(Color.AQUA);
                     playerRoomMap.put(runr.hashCode(), topLeftRoom.getId());
-                    playerMap.put(runr,1);
+                    playerMap.put(runr, 1);
                     break;
                 case 1:
                     runr.setFill(Color.FORESTGREEN);
                     playerRoomMap.put(runr.hashCode(), topRightRoom.getId());
-                    playerMap.put(runr,2);
+                    playerMap.put(runr, 2);
                     break;
                 case 2:
                     runr.setFill(Color.CRIMSON);
                     playerRoomMap.put(runr.hashCode(), bottomLeftRoom.getId());
-                    playerMap.put(runr,3);
+                    playerMap.put(runr, 3);
                     break;
                 case 3:
                     runr.setFill(Color.DARKVIOLET);
                     playerRoomMap.put(runr.hashCode(), bottomRightRoom.getId());
-                    playerMap.put(runr,4);
+                    playerMap.put(runr, 4);
                     break;
             }
             roomList.get(roomIndex).getChildren().add(runr);
@@ -261,22 +284,8 @@ public class mainDriver extends Application {
         npcList.addAll(taggersList);
 
 
-       // prints the hashcode of the runner and the room they are in at the start of the game
+        // prints the hashcode of the runner and the room they are in at the start of the game
         playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
-
-        // event listener for the playerRoomMap, prints any changes to the map currently
-        playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
-//
-            if (change.wasAdded()) {
-                System.out.println("Added: " + change.getKey() + " : " + change.getValueAdded());
-            }
-            if (change.wasRemoved()) {
-                System.out.println("Removed: " + change.getKey() + " : " + change.getValueRemoved());
-            }
-        });
-
-
-
 
         //event handler for the start button
         startButton.setOnAction(e -> {
@@ -377,30 +386,26 @@ public class mainDriver extends Application {
                                         switch (a) {
                                             case 0:
                                                 roomList.get(1).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
-                                                        roomList.get(1).getId());
-                                                playerMap.put(teleportMe.get(b),2);
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(1).getId());
+                                                playerMap.put(teleportMe.get(b), 2);
                                                 break;
 
                                             case 1:
                                                 roomList.get(2).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
-                                                        roomList.get(2).getId());
-                                                playerMap.put(teleportMe.get(b),3);
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(2).getId());
+                                                playerMap.put(teleportMe.get(b), 3);
                                                 break;
 
                                             case 2:
                                                 roomList.get(3).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
-                                                        roomList.get(3).getId());
-                                                playerMap.put(teleportMe.get(b),4);
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(3).getId());
+                                                playerMap.put(teleportMe.get(b), 4);
                                                 break;
 
                                             case 3:
                                                 roomList.get(0).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
-                                                        roomList.get(0).getId());
-                                                playerMap.put(teleportMe.get(b),1);
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(0).getId());
+                                                playerMap.put(teleportMe.get(b), 1);
                                                 break;
                                         }
 
@@ -420,6 +425,8 @@ public class mainDriver extends Application {
                     // if a runner got tagged
                     if (gotTaggedList.size() > 0) {
 
+
+
                         // for each runner in gotTaggedList
                         for (int d = 0; d < gotTaggedList.size(); d++) {
                             boolean removalComplete = false;
@@ -432,7 +439,7 @@ public class mainDriver extends Application {
                                         roomList.get(e).getChildren().remove(gotTaggedList.get(d));
                                         // remove runner from playerRoomMap
                                         playerRoomMap.remove(gotTaggedList.get(d).hashCode());
-                                        playerMap.put(gotTaggedList.get(d),5);
+                                        playerMap.put(gotTaggedList.get(d), 5);
                                         removalComplete = true;
                                     }
                                 }
@@ -448,20 +455,27 @@ public class mainDriver extends Application {
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
+
+
             //event handler for the pause button
             pauseButton.setOnAction(event -> {
-                if(pauseButton.getText().equals("Pause")) {
+                if (pauseButton.getText().equals("Pause")) {
                     timeline.pause();
                     timer.pause();
                     pauseButton.setText("Unpause");
-                } else if(pauseButton.getText().equals("Unpause")) {
+                } else if (pauseButton.getText().equals("Unpause")) {
                     timeline.play();
                     timer.play();
                     pauseButton.setText("Pause");
                 }
             });
 
-        });//startButton
+            //event handler for the invisibleButton
+            invisibleButton.setOnAction(event -> {
+
+            });
+
+        });//end of start method
 
         //event handler for the exit button
         exitButton.setOnAction(e -> {
