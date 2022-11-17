@@ -16,6 +16,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -50,6 +53,10 @@ public class mainDriver extends Application {
         roomList.add(topRightRoom);
         roomList.add(bottomLeftRoom);
         roomList.add(bottomRightRoom);
+        topLeftRoom.setId("topLeftRoom");
+        topRightRoom.setId("topRightRoom");
+        bottomLeftRoom.setId("bottomLeftRoom");
+        bottomRightRoom.setId("bottomRightRoom");
 
         // styling rooms
         for (Pane p : roomList) {
@@ -164,6 +171,14 @@ public class mainDriver extends Application {
         // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
+        /**
+         * playerRoomMap maps the runners to the room they are in.
+         * Key = runner hashcode (Integer) *replace with Josue's hashcode*
+         * Value = room Id (String)
+         * */
+        ObservableMap<Integer, String> playerRoomMap = FXCollections.observableHashMap();
+
+
         // add players to rooms by cycling through rooms
         int roomIndex = 0;
         for (Runner runr : runnerList) {
@@ -171,15 +186,19 @@ public class mainDriver extends Application {
             switch (roomIndex) {
                 case 0:
                     runr.setFill(Color.AQUA);
+                    playerRoomMap.put(runr.hashCode(), topLeftRoom.getId());
                     break;
                 case 1:
                     runr.setFill(Color.FORESTGREEN);
+                    playerRoomMap.put(runr.hashCode(), topRightRoom.getId());
                     break;
                 case 2:
                     runr.setFill(Color.CRIMSON);
+                    playerRoomMap.put(runr.hashCode(), bottomLeftRoom.getId());
                     break;
                 case 3:
                     runr.setFill(Color.DARKVIOLET);
+                    playerRoomMap.put(runr.hashCode(), bottomRightRoom.getId());
                     break;
             }
             roomList.get(roomIndex).getChildren().add(runr);
@@ -206,6 +225,24 @@ public class mainDriver extends Application {
         npcList.addAll(runnerList);
         npcList.addAll(taggersList);
 
+
+       // prints the hashcode of the runner and the room they are in at the start of the game
+        playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
+
+        // event listener for the playerRoomMap, prints any changes to the map currently
+        playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
+//
+            if (change.wasAdded()) {
+                System.out.println("Added: " + change.getKey() + " : " + change.getValueAdded());
+            }
+            if (change.wasRemoved()) {
+                System.out.println("Removed: " + change.getKey() + " : " + change.getValueRemoved());
+            }
+        });
+
+
+
+
         //event handler for the start button
         startButton.setOnAction(e -> {
 
@@ -221,23 +258,12 @@ public class mainDriver extends Application {
                 public void handle(ActionEvent ae) {
                     time[0]++;
                     timeLabel.setText("Time elapsed: " + time[0] / 10); // displays as 0.0
+
                 }
             }));
 
             timer.setCycleCount(Timeline.INDEFINITE);
             timer.play();
-
-      /*
-        SECOND TIMER IMPLEMENTATION
-
-       double startTime = System.currentTimeMillis();
-            new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    double elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-                    timeLabel.setText("Time elapsed: " + elapsedTime); // displays as 0.000
-                }
-            }.start();*/
 
 
             //creating the timeline for the game loop
@@ -303,22 +329,30 @@ public class mainDriver extends Application {
                                     if (!teleportComplete) { // if this runner has not already teleported
                                         // remove runner from current room
                                         roomList.get(a).getChildren().remove(teleportMe.get(b));
-                                        // add runner to next room
+                                        // add runner to next room and update playerRoomMap
                                         switch (a) {
                                             case 0:
                                                 roomList.get(1).getChildren().add(teleportMe.get(b));
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
+                                                        roomList.get(1).getId());
                                                 break;
 
                                             case 1:
                                                 roomList.get(2).getChildren().add(teleportMe.get(b));
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
+                                                        roomList.get(2).getId());
                                                 break;
 
                                             case 2:
                                                 roomList.get(3).getChildren().add(teleportMe.get(b));
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
+                                                        roomList.get(3).getId());
                                                 break;
 
                                             case 3:
                                                 roomList.get(0).getChildren().add(teleportMe.get(b));
+                                                playerRoomMap.put(teleportMe.get(b).hashCode(),
+                                                        roomList.get(0).getId());
                                                 break;
                                         }
 
@@ -348,6 +382,8 @@ public class mainDriver extends Application {
                                     if (!removalComplete) {
                                         // remove runner from current room
                                         roomList.get(e).getChildren().remove(gotTaggedList.get(d));
+                                        // remove runner from playerRoomMap
+                                        playerRoomMap.remove(gotTaggedList.get(d).hashCode());
                                         removalComplete = true;
                                     }
                                 }
