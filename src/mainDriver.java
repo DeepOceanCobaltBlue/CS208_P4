@@ -1,17 +1,7 @@
 /* CS208.004 Data Structures
  * P4 - Hashing
- * mainDriver.java - Driver program for the digital game of 'Tag'. Uses javaFX to build and display the game
- * animations, and uses a hash table to store the players and their locations.
- *
- * @author Kevin Pinto - Wrote the game board and components in javaFX, the core game loop via javaFX's animation
- * Timelines, and initial player movement/collision detection. Also wrote the 'win' and 'lose' conditions, and the
- * initial implementation of the hash map.
- *
- * @modified by Christopher Peters
- *
- * */
-
-import javafx.animation.AnimationTimer;
+ * Kevin, Chris, Josue
+ */
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -23,10 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -36,13 +23,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
-
 public class mainDriver extends Application {
-
 
     @Override
     public void start(Stage primaryStage) {
@@ -170,6 +155,7 @@ public class mainDriver extends Application {
         bottomRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(bottomRoomsContainer);
 
+        // init room display area
         VBox statContainer = new VBox();
         statContainer.setPrefSize(400,700);
         statContainer.setLayoutX(800);
@@ -196,6 +182,10 @@ public class mainDriver extends Application {
         textArea4.setWrapText(true);
         statContainer.getChildren().addAll(text1,textArea1,text2,textArea2,text3,textArea3,text4,textArea4);
         basePane.getChildren().add(statContainer);
+
+        // init win message
+        Alert winMessage = new Alert(Alert.AlertType.INFORMATION);
+        winMessage.setTitle("Winner");
 
         // adding the two top rooms to topRoomsContainer
         topRoomsContainer.getChildren().addAll(topLeftRoom, topRightRoom);
@@ -260,23 +250,10 @@ public class mainDriver extends Application {
         npcList.addAll(runnerList);
         npcList.addAll(taggersList);
 
-
-       // prints the hashcode of the runner and the room they are in at the start of the game
-        playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
-
         // event listener for the playerRoomMap, prints any changes to the map currently
         playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
-//
-            if (change.wasAdded()) {
-                System.out.println("Added: " + change.getKey() + " : " + change.getValueAdded());
-            }
-            if (change.wasRemoved()) {
-                System.out.println("Removed: " + change.getKey() + " : " + change.getValueRemoved());
-            }
+
         });
-
-
-
 
         //event handler for the start button
         startButton.setOnAction(e -> {
@@ -284,9 +261,7 @@ public class mainDriver extends Application {
             // prevents the user from starting the game multiple times
             startButton.setDisable(true);
 
-/**
- * Creating a timer to track elapsed time and display it on the game board.
- */
+            // Creating a timer to track elapsed time and display it on the game board.
             final double[] time = {0};
             Timeline timer = new Timeline(new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
                 @Override
@@ -300,10 +275,8 @@ public class mainDriver extends Application {
             timer.setCycleCount(Timeline.INDEFINITE);
             timer.play();
 
-
             //creating the timeline for the game loop
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-
 
                 @Override
                 public void handle(ActionEvent t) {
@@ -311,6 +284,18 @@ public class mainDriver extends Application {
                     Bounds bounds = topLeftRoom.getLayoutBounds();
                     ArrayList<Runner> teleportMe = new ArrayList<>();
                     ArrayList<Runner> gotTaggedList = new ArrayList<>();
+                    int unTagged = playerMap.getRoomCount(1) + playerMap.getRoomCount(2) + playerMap.getRoomCount(3) + playerMap.getRoomCount(4);
+
+                    // update textarea's with each rooms current player list
+                    textArea1.setText(playerMap.getRoom(1));
+                    textArea2.setText(playerMap.getRoom(2));
+                    textArea3.setText(playerMap.getRoom(3));
+                    textArea4.setText(playerMap.getRoom(4));
+
+                    text1.setText("Runners: " + unTagged + " Tagged: " + playerMap.getRoomCount(5) + "\nTop-Left: " + playerMap.getRoomCount(1));
+                    text2.setText("Top-Right: " + playerMap.getRoomCount(2));
+                    text3.setText("Bottom-Left: " + playerMap.getRoomCount(3));
+                    text4.setText("Bottom-Right: " + playerMap.getRoomCount(4));
 
                     // ___ update position ___
                     for (NPC npc : npcList) {
@@ -333,20 +318,11 @@ public class mainDriver extends Application {
                                 // if intersect shape contains any width => intersection => move Runner
                                 if (npc.getCanTeleport()) {
                                     teleportMe.add((Runner) npc);
-                                    textArea1.setText(playerMap.getRoom(1));
-                                    textArea2.setText(playerMap.getRoom(2));
-                                    textArea3.setText(playerMap.getRoom(3));
-                                    textArea4.setText(playerMap.getRoom(4));
-                                    int unTagged = playerMap.getRoomCount(1) + playerMap.getRoomCount(2) + playerMap.getRoomCount(3) + playerMap.getRoomCount(4);
-                                    text1.setText("Runners: " + unTagged + " Tagged: " + playerMap.getRoomCount(5) + "\nTop-Left: " + playerMap.getRoomCount(1));
-                                    text2.setText("Top-Right: " + playerMap.getRoomCount(2));
-                                    text3.setText("Bottom-Left: " + playerMap.getRoomCount(3));
-                                    text4.setText("Bottom-Right: " + playerMap.getRoomCount(4));
                                 }
                             }
                         }
 
-
+                        // check for players who get tagged
                         for (Tagger tagr : taggersList) {
                             if (Circle.intersect(npc, tagr).getBoundsInLocal().getWidth() != -1) {
                                 // if intersect shape contains any width => intersection => move Runner
@@ -357,7 +333,6 @@ public class mainDriver extends Application {
                         }
 
                     }
-
 
                     // if there is a runner to teleport
                     if (teleportMe.size() > 0) {
@@ -434,6 +409,8 @@ public class mainDriver extends Application {
                                         playerRoomMap.remove(gotTaggedList.get(d).hashCode());
                                         playerMap.put(gotTaggedList.get(d),5);
                                         removalComplete = true;
+
+
                                     }
                                 }
                             }
@@ -443,6 +420,7 @@ public class mainDriver extends Application {
 
                 }
             }));
+
 
             //set the timeline to loop indefinitely
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -460,6 +438,8 @@ public class mainDriver extends Application {
                     pauseButton.setText("Pause");
                 }
             });
+
+
 
         });//startButton
 

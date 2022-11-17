@@ -94,6 +94,9 @@ public class GameMap<K,V> {
         }
     }
 
+    /**
+     * Displays players currently in this room
+     */
     public String getRoom(int room) {
         int count = 0;
         String out = "";
