@@ -24,5 +24,8 @@ public class Runner extends NPC {
         super.setCanTeleport(true);
     }
 
-
+    @Override
+    public String toString() {
+        return "ID#" + getNumID();
+    }
 }

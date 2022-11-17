@@ -25,12 +25,15 @@ import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -135,7 +138,7 @@ public class mainDriver extends Application {
 
         // basePane is the highest level pane, the root node of the scene graph
         Pane basePane = new Pane();
-        Scene scene = new Scene(basePane, 800, 700);
+        Scene scene = new Scene(basePane, 1200, 700);
 
         // vertContainer is the vertical container for the toolbar and the two horizontal containers
         VBox vertContainer = new VBox();
@@ -147,13 +150,14 @@ public class mainDriver extends Application {
         toolBar.setPrefSize(800, 36);
         Button startButton = new Button("Start Game");
         Button exitButton = new Button("Exit Game");
+        Button pauseButton = new Button("Pause");
         exitButton.setTranslateX(630);
-        toolBar.getItems().addAll(startButton, exitButton);
+        toolBar.getItems().addAll(startButton, exitButton, pauseButton);
         vertContainer.getChildren().add(toolBar);
 
         // adding a label to display the elapsed time on the toolbar
         Label timeLabel = new Label("Time elapsed: 0");
-        timeLabel.setTranslateX(200);
+        timeLabel.setTranslateX(150);
         toolBar.getItems().add(timeLabel);
 
         // topRoomsContainer is the horizontal container for the top left and top right rooms
@@ -166,6 +170,33 @@ public class mainDriver extends Application {
         bottomRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(bottomRoomsContainer);
 
+        VBox statContainer = new VBox();
+        statContainer.setPrefSize(400,700);
+        statContainer.setLayoutX(800);
+        statContainer.setSpacing(10);
+        Text text1 = new Text("Top-Right count: ");
+        Text text2 = new Text("Top-Left count: ");
+        Text text3 = new Text("Bottom-Right count: ");
+        Text text4 = new Text("Bottom-Left count: ");
+        text1.setFont(new Font(20));
+        text2.setFont(new Font(20));
+        text3.setFont(new Font(20));
+        text4.setFont(new Font(20));
+        TextArea textArea1 = new TextArea();
+        TextArea textArea2 = new TextArea();
+        TextArea textArea3 = new TextArea();
+        TextArea textArea4 = new TextArea();
+        textArea1.setPrefRowCount(10);
+        textArea1.setWrapText(true);
+        textArea2.setPrefRowCount(10);
+        textArea2.setWrapText(true);
+        textArea3.setPrefRowCount(10);
+        textArea3.setWrapText(true);
+        textArea4.setPrefRowCount(10);
+        textArea4.setWrapText(true);
+        statContainer.getChildren().addAll(text1,textArea1,text2,textArea2,text3,textArea3,text4,textArea4);
+        basePane.getChildren().add(statContainer);
+
         // adding the two top rooms to topRoomsContainer
         topRoomsContainer.getChildren().addAll(topLeftRoom, topRightRoom);
         // adding the two bottom rooms to bottomRoomsContainer
@@ -177,7 +208,7 @@ public class mainDriver extends Application {
          * Value = room Id (String)
          * */
         ObservableMap<Integer, String> playerRoomMap = FXCollections.observableHashMap();
-
+        GameMap<NPC,Integer> playerMap = new GameMap<>();
 
         // add players to rooms by cycling through rooms
         int roomIndex = 0;
@@ -187,18 +218,22 @@ public class mainDriver extends Application {
                 case 0:
                     runr.setFill(Color.AQUA);
                     playerRoomMap.put(runr.hashCode(), topLeftRoom.getId());
+                    playerMap.put(runr,1);
                     break;
                 case 1:
                     runr.setFill(Color.FORESTGREEN);
                     playerRoomMap.put(runr.hashCode(), topRightRoom.getId());
+                    playerMap.put(runr,2);
                     break;
                 case 2:
                     runr.setFill(Color.CRIMSON);
                     playerRoomMap.put(runr.hashCode(), bottomLeftRoom.getId());
+                    playerMap.put(runr,3);
                     break;
                 case 3:
                     runr.setFill(Color.DARKVIOLET);
                     playerRoomMap.put(runr.hashCode(), bottomRightRoom.getId());
+                    playerMap.put(runr,4);
                     break;
             }
             roomList.get(roomIndex).getChildren().add(runr);
@@ -298,6 +333,15 @@ public class mainDriver extends Application {
                                 // if intersect shape contains any width => intersection => move Runner
                                 if (npc.getCanTeleport()) {
                                     teleportMe.add((Runner) npc);
+                                    textArea1.setText(playerMap.getRoom(1));
+                                    textArea2.setText(playerMap.getRoom(2));
+                                    textArea3.setText(playerMap.getRoom(3));
+                                    textArea4.setText(playerMap.getRoom(4));
+                                    int unTagged = playerMap.getRoomCount(1) + playerMap.getRoomCount(2) + playerMap.getRoomCount(3) + playerMap.getRoomCount(4);
+                                    text1.setText("Runners: " + unTagged + " Tagged: " + playerMap.getRoomCount(5) + "\nTop-Left: " + playerMap.getRoomCount(1));
+                                    text2.setText("Top-Right: " + playerMap.getRoomCount(2));
+                                    text3.setText("Bottom-Left: " + playerMap.getRoomCount(3));
+                                    text4.setText("Bottom-Right: " + playerMap.getRoomCount(4));
                                 }
                             }
                         }
@@ -335,24 +379,28 @@ public class mainDriver extends Application {
                                                 roomList.get(1).getChildren().add(teleportMe.get(b));
                                                 playerRoomMap.put(teleportMe.get(b).hashCode(),
                                                         roomList.get(1).getId());
+                                                playerMap.put(teleportMe.get(b),2);
                                                 break;
 
                                             case 1:
                                                 roomList.get(2).getChildren().add(teleportMe.get(b));
                                                 playerRoomMap.put(teleportMe.get(b).hashCode(),
                                                         roomList.get(2).getId());
+                                                playerMap.put(teleportMe.get(b),3);
                                                 break;
 
                                             case 2:
                                                 roomList.get(3).getChildren().add(teleportMe.get(b));
                                                 playerRoomMap.put(teleportMe.get(b).hashCode(),
                                                         roomList.get(3).getId());
+                                                playerMap.put(teleportMe.get(b),4);
                                                 break;
 
                                             case 3:
                                                 roomList.get(0).getChildren().add(teleportMe.get(b));
                                                 playerRoomMap.put(teleportMe.get(b).hashCode(),
                                                         roomList.get(0).getId());
+                                                playerMap.put(teleportMe.get(b),1);
                                                 break;
                                         }
 
@@ -384,6 +432,7 @@ public class mainDriver extends Application {
                                         roomList.get(e).getChildren().remove(gotTaggedList.get(d));
                                         // remove runner from playerRoomMap
                                         playerRoomMap.remove(gotTaggedList.get(d).hashCode());
+                                        playerMap.put(gotTaggedList.get(d),5);
                                         removalComplete = true;
                                     }
                                 }
@@ -399,6 +448,18 @@ public class mainDriver extends Application {
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
+            //event handler for the pause button
+            pauseButton.setOnAction(event -> {
+                if(pauseButton.getText().equals("Pause")) {
+                    timeline.pause();
+                    timer.pause();
+                    pauseButton.setText("Unpause");
+                } else if(pauseButton.getText().equals("Unpause")) {
+                    timeline.play();
+                    timer.play();
+                    pauseButton.setText("Pause");
+                }
+            });
 
         });//startButton
 
