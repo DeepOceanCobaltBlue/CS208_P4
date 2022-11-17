@@ -148,8 +148,10 @@ public class mainDriver extends Application {
         Button startButton = new Button("Start Game");
         Button exitButton = new Button("Exit Game");
         Button pauseButton = new Button("Pause");
+        Button invisibleButton = new Button();
+        invisibleButton.setVisible(false);
         exitButton.setTranslateX(630);
-        toolBar.getItems().addAll(startButton, exitButton, pauseButton);
+        toolBar.getItems().addAll(startButton, exitButton, pauseButton, invisibleButton);
         vertContainer.getChildren().add(toolBar);
 
         // adding a label to display the elapsed time on the toolbar
@@ -206,10 +208,6 @@ public class mainDriver extends Application {
         // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
-       Button invisibleButton = new Button();
-       invisibleButton.setDisable(true);
-       invisibleButton.setVisible(false);
-       vertContainer.getChildren().add(invisibleButton);
 
         /**
          * playerRoomMap maps the runners to the room they are in.
@@ -220,17 +218,7 @@ public class mainDriver extends Application {
         GameMap<NPC, Integer> playerMap = new GameMap<>();
 
         playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
-            if(playerMap.getRoomCount(5) == 99) {
-                invisibleButton.fire();
-               // pauseButton.fire();
-                String winner = "";
-                for(int i = 1; i < 5; i++) {
-                    if(!(playerMap.getRoom(i).equals(""))) {
-                        winner = playerMap.getRoom(i);
-                        System.out.println(winner);
-                    }
-                }
-            }
+
         });
 
         // add players to rooms by cycling through rooms
@@ -285,7 +273,7 @@ public class mainDriver extends Application {
 
 
         // prints the hashcode of the runner and the room they are in at the start of the game
-        playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
+        //playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
 
         //event handler for the start button
         startButton.setOnAction(e -> {
@@ -441,6 +429,7 @@ public class mainDriver extends Application {
                                         playerRoomMap.remove(gotTaggedList.get(d).hashCode());
                                         playerMap.put(gotTaggedList.get(d), 5);
                                         removalComplete = true;
+                                        invisibleButton.fire();
                                     }
                                 }
                             }
@@ -472,7 +461,16 @@ public class mainDriver extends Application {
 
             //event handler for the invisibleButton
             invisibleButton.setOnAction(event -> {
-
+                if(playerMap.getRoomCount(5) == 99) {
+                    pauseButton.fire();
+                    String winner;
+                    for(int i = 1; i < 5; i++) {
+                        if(!(playerMap.getRoom(i).equals(""))) {
+                            winner = playerMap.getRoom(i);
+                            System.out.println(winner);
+                        }
+                    }
+                }
             });
 
         });//end of start method
