@@ -207,7 +207,6 @@ public class mainDriver extends Application {
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
         Button invisibleButton = new Button();
-        invisibleButton.setDisable(true);
         invisibleButton.setVisible(false);
         vertContainer.getChildren().add(invisibleButton);
 
@@ -230,6 +229,7 @@ public class mainDriver extends Application {
                         System.out.println(winner);
                     }
                 }
+
             }
         });
 
@@ -481,6 +481,8 @@ public class mainDriver extends Application {
                             System.out.println(winner);
                         }
                     }
+                    results.setText("The winner is " + winner + "!");
+                    results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
                 }
             });
 
