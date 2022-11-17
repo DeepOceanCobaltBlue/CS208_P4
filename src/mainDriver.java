@@ -467,7 +467,7 @@ public class mainDriver extends Application {
                     for(int i = 1; i < 5; i++) {
                         if(!(playerMap.getRoom(i).equals(""))) {
                             winner = playerMap.getRoom(i);
-                            System.out.println(winner);
+                            results.setText(winner);
                         }
                     }
                 }
