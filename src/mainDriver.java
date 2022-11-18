@@ -447,6 +447,8 @@ public class mainDriver extends Application {
                     }
                     results.setText("The winner is " + winner + "!\n");
                     results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
+                    text1.setText("Runners: 1" + " Tagged: 99" + "\nTop-Left: " + playerMap.getRoomCount(1));
+                    pauseButton.setDisable(true);
                 }
             });
 
