@@ -1,3 +1,7 @@
+/*  Christopher Peters - Wrote class in accordance with UML design
+    Josue - Implemented hashCode() method
+
+ */
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 

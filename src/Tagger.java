@@ -1,3 +1,6 @@
+/*  Christopher Peters - Wrote class in accordance with UML design
+
+ */
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 
