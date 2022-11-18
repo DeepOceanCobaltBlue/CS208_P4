@@ -43,4 +43,9 @@ public abstract class NPC extends GameItem {
     public void setCanTeleport(boolean canTeleport) {
         this.canTeleport = canTeleport;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "| NPC | SpeedX: " + this.speedX + " | SpeedY: " + this.speedY + " | Can Teleport: " + this.canTeleport;
+    }
 }

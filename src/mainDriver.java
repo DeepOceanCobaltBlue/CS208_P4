@@ -12,8 +12,9 @@
  * version of the game operational. Wrote initialization code for taggers/runners as well as handling teleportation.
  * Helped get invisiblebutton concept implemented. Helped with collision logic.
  *
- *
- *
+ * @modified by Josue Florian - implemented final custom hashmap and hashcode function. Wrote a statistics board
+ * to be able to visualize the hashmap during the game. Handled the updating of runner hashmap values. Implemented
+ * pause button and new game button logic.
  * */
 
 import javafx.animation.KeyFrame;
@@ -309,6 +310,7 @@ public class mainDriver extends Application {
                                 // if intersect shape contains any width => intersection => move Runner
                                 if (npc.getCanTeleport()) {
                                     teleportMe.add((Runner) npc);
+                                    // updates statistics
                                     textArea1.setText(playerMap.getRoom(1));
                                     textArea2.setText(playerMap.getRoom(2));
                                     textArea3.setText(playerMap.getRoom(3));
@@ -432,15 +434,6 @@ public class mainDriver extends Application {
                     timer.pause();
                     timeline.pause();
                     String winner = "";
-                    //find the winner
-                    for (int i = 1; i < 5; i++) {
-                        if (!(playerMap.getRoom(i).equals(""))) {
-                            winner = playerMap.getRoom(i);
-                        }
-                    }
-                    // Display winner message
-                    results.setText("The winner is " + winner + "!\n");
-                    results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
                     //clear the game board
                     text1.setText("Runners: 1" + " Tagged: 99" + "\nTop-Left: 0");
                     text2.setText("Top-Right: 0");
@@ -451,6 +444,39 @@ public class mainDriver extends Application {
                     textArea2.setText("");
                     textArea3.setText("");
                     textArea4.setText("");
+                    //find the winner
+                    for (int i = 1; i < 5; i++) {
+                        if (!(playerMap.getRoom(i).equals(""))) {
+                            winner = playerMap.getRoom(i);
+                            //display winner location
+                            switch (i) {
+                                case 1:
+                                    textArea1.setText(playerMap.getRoom(1));
+                                    text1.setText("Runners: 1" + " Tagged: 99" + "\nTop-Left: " + playerMap.getRoomCount(1));
+                                case 2:
+                                    textArea2.setText(playerMap.getRoom(2));
+                                    text2.setText("Top-Right: " + playerMap.getRoomCount(2));
+                                case 3:
+                                    textArea3.setText(playerMap.getRoom(3));
+                                    text3.setText("Bottom-Left: " + playerMap.getRoomCount(3));
+                                case 4:
+                                    textArea4.setText(playerMap.getRoom(4));
+                                    text4.setText("Bottom-Right: " + playerMap.getRoomCount(4));
+                            }
+                        }
+                    }
+                    // Display winner message
+                    results.setText("The winner is " + winner + "!\n");
+                    results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
+
+                    // Enables starting a new game
+                    startButton.setText("New Game");
+                    startButton.setDisable(false);
+                    startButton.setOnAction(someEvent -> {
+                        primaryStage.close();
+                        mainDriver newGame = new mainDriver();
+                        newGame.start(new Stage());
+                    });
                 }
             });
 

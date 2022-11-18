@@ -1,5 +1,5 @@
 /*  Christopher Peters - Wrote class in accordance with UML design
-    Josue - Implemented hashCode() method
+    Josue Florian - Implemented toString(), equals(), and hashCode() methods
 
  */
 import javafx.scene.paint.Paint;
@@ -31,10 +31,32 @@ public abstract class GameItem extends Circle {
     }
 
     @Override
+    public String toString() {
+        return "GameItem ID: " + this.numID;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(obj.getClass() == this.getClass()) {
+            GameItem gameItem = (GameItem) obj;
+            return (this.numID == gameItem.numID) && (this.color.equals(gameItem.color));
+        }
+        return false;
+    }
+
+    @Override
     public int hashCode() {
+        //modulo hash
         int result = 7;
         result = 23 * result + this.numID;
 
+        //multiplicative string hash
         int prime = 3;
         for(int i = 0; i < this.color.length(); i++) {
             char c =  this.color.charAt(i);
