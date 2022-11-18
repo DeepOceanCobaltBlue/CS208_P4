@@ -1,5 +1,7 @@
 /* Josue Florian - Wrote an array based hashmap implementation to keep
    track of a runners location and status within the game
+   The hashcode is used to calculate the index in which to place the key's respective value.
+   During rehashing the hashcode is again used to calculate a new index.
  */
 public class GameMap<K,V> {
     /**
