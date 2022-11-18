@@ -21,9 +21,4 @@ public class Tagger extends NPC {
         super.setCanTeleport(false);
     }
 
-    @Override
-    public String toString() {
-        return (super.toString() + "| Tagger | " );
-    }
-
 }

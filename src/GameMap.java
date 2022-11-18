@@ -20,7 +20,7 @@ public class GameMap<K,V> {
 
         @Override
         public String toString() {
-            return "Runner:" + this.key + " ";
+            return this.key.toString();
         }
     }
 
@@ -38,8 +38,8 @@ public class GameMap<K,V> {
 
     /**
      * Places a bucket into the hashmap
-     * @param key
-     * @param value
+     * @param key - assigned key to
+     * @param value - associate with this value
      * @return true if the insertion was successful, false otherwise
      */
     public boolean put(K key, V value) {
@@ -104,7 +104,7 @@ public class GameMap<K,V> {
 
     /**
      * Looks for a key and returns its respective value
-     * @param key
+     * @param key - key value to find associated value
      * @return the value found a certain key, otherwise null
      */
     public V get(K key) {
@@ -137,7 +137,7 @@ public class GameMap<K,V> {
 
     /**
      * Displays players currently in this room
-     * @param room
+     * @param room - which room to display
      * @return a string of players in a certain room
      */
     public String getRoom(int room) {
@@ -147,7 +147,7 @@ public class GameMap<K,V> {
             if(buckets[i].value != null) {
                 if((Integer) buckets[i].value == room) {
                     count++;
-                    out = out + buckets[i].toString();
+                    out = out + buckets[i].toString() + " ";
                 }
             }
         }
@@ -156,7 +156,7 @@ public class GameMap<K,V> {
 
     /**
      * Displays number of players currently in this room
-     * @param room
+     * @param room - which room to display
      * @return an int of the number of players in a certain room
      */
     public int getRoomCount(int room) {

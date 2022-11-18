@@ -14,8 +14,4 @@ public class Teleporter extends GameItem {
         super.setNumID(ID);
     }
 
-    @Override
-    public String toString() {
-        return ( super.toString() + " | Teleporter |");
-    }
 }

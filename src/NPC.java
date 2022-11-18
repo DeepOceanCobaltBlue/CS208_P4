@@ -45,11 +45,6 @@ public abstract class NPC extends GameItem {
     }
 
     @Override
-    public String toString() {
-        return (super.toString() + " | NPC " );
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if(obj == this) {
             return true;
