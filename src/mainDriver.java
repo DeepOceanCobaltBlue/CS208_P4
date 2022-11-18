@@ -4,26 +4,26 @@
  * animations, and uses a hash table to store the players and their locations.
  *
  * @author Kevin Pinto - Wrote the game board and components in javaFX, the core game loop via javaFX's animation
- * Timelines, and initial player movement/collision detection. Also wrote the 'win' and 'lose' conditions, and the
- * initial implementation of the hash map.
+ * Timelines, and initial player movement/collision detection, the win condition, the
+ * initial implementation of the hash map, the elapsed timer, and the results displays. Worked with Chris to
+ * implement the invisible button end game solution, improved collision detection and teleporting, and
  *
  * @modified by Christopher Peters
  *
  * */
 
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -354,7 +354,7 @@ public class mainDriver extends Application {
                                     if (!teleportComplete) { // if this runner has not already teleported
                                         // remove runner from current room
                                         roomList.get(a).getChildren().remove(teleportMe.get(b));
-                                        // add runner to next room and update playerRoomMap
+                                        // add runner to next room and update playerMap
                                         switch (a) {
                                             case 0:
                                                 roomList.get(1).getChildren().add(teleportMe.get(b));
@@ -401,7 +401,7 @@ public class mainDriver extends Application {
                                     if (!removalComplete) {
                                         // remove runner from current room
                                         roomList.get(e).getChildren().remove(gotTaggedList.get(d));
-
+                                        //update playerMap
                                         playerMap.put(gotTaggedList.get(d), 5);
                                         removalComplete = true;
                                         //end condition check
@@ -435,10 +435,12 @@ public class mainDriver extends Application {
 
             //event handler for invisibleButton, stops the game and displays the end results when 1 runner is left
             invisibleButton.setOnAction(event -> {
+                //check if there is only 1 runner left,
                 if (playerMap.getRoomCount(5) == 99) {
                     timer.pause();
                     timeline.pause();
                     String winner = "";
+                    //find the winner
                     for (int i = 1; i < 5; i++) {
                         if (!(playerMap.getRoom(i).equals(""))) {
                             winner = playerMap.getRoom(i);
@@ -447,8 +449,16 @@ public class mainDriver extends Application {
                     }
                     results.setText("The winner is " + winner + "!\n");
                     results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
-                    text1.setText("Runners: 1" + " Tagged: 99" + "\nTop-Left: " + playerMap.getRoomCount(1));
+                    //clear the game board
+                    text1.setText("Runners: 1" + " Tagged: 99" + "\nTop-Left: 0");
+                    text2.setText("Top-Right: 0");
+                    text3.setText("Bottom-Left: 0");
+                    text4.setText("Bottom-Right: 0");
                     pauseButton.setDisable(true);
+                    textArea1.setText("");
+                    textArea2.setText("");
+                    textArea3.setText("");
+                    textArea4.setText("");
                 }
             });
 
