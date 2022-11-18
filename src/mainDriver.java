@@ -209,6 +209,10 @@ public class mainDriver extends Application {
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
 
+        Button invisibleButton = new Button();
+        invisibleButton.setVisible(false);
+        vertContainer.getChildren().add(invisibleButton);
+
         /**
          * playerRoomMap maps the runners to the room they are in.
          * Key = runner hashcode (Integer) *replace with Josue's hashcode*
@@ -219,6 +223,18 @@ public class mainDriver extends Application {
 
         playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
 
+            if (playerMap.getRoomCount(5) == 99) {
+                invisibleButton.fire();
+                // pauseButton.fire();
+                String winner = "";
+                for (int i = 1; i < 5; i++) {
+                    if (!(playerMap.getRoom(i).equals(""))) {
+                        winner = playerMap.getRoom(i);
+                        System.out.println(winner);
+                    }
+                }
+
+            }
         });
 
         // add players to rooms by cycling through rooms
@@ -414,7 +430,6 @@ public class mainDriver extends Application {
                     if (gotTaggedList.size() > 0) {
 
 
-
                         // for each runner in gotTaggedList
                         for (int d = 0; d < gotTaggedList.size(); d++) {
                             boolean removalComplete = false;
@@ -428,6 +443,7 @@ public class mainDriver extends Application {
                                         // remove runner from playerRoomMap
                                         playerRoomMap.remove(gotTaggedList.get(d).hashCode());
                                         playerMap.put(gotTaggedList.get(d), 5);
+                                        invisibleButton.fire();
                                         removalComplete = true;
                                         invisibleButton.fire();
                                     }
@@ -445,7 +461,6 @@ public class mainDriver extends Application {
             timeline.play();
 
 
-
             //event handler for the pause button
             pauseButton.setOnAction(event -> {
                 if (pauseButton.getText().equals("Pause")) {
@@ -461,15 +476,19 @@ public class mainDriver extends Application {
 
             //event handler for the invisibleButton
             invisibleButton.setOnAction(event -> {
-                if(playerMap.getRoomCount(5) == 99) {
-                    pauseButton.fire();
-                    String winner;
-                    for(int i = 1; i < 5; i++) {
-                        if(!(playerMap.getRoom(i).equals(""))) {
+
+                if (playerMap.getRoomCount(5) == 99) {
+                    timer.pause();
+                    timeline.pause();
+                    String winner = "";
+                    for (int i = 1; i < 5; i++) {
+                        if (!(playerMap.getRoom(i).equals(""))) {
                             winner = playerMap.getRoom(i);
-                            results.setText(winner);
+                            System.out.println(winner);
                         }
                     }
+                    results.setText("The winner is " + winner + "!");
+                    results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
                 }
             });
 
