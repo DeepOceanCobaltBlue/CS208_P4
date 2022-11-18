@@ -1,6 +1,6 @@
 /*  Christopher Peters - Wrote class in accordance with UML design
     Josue Florian - Implemented toString(), equals(), and hashCode() methods
-    The overridden hashCode() method calculates a hashCode from the key's numID and color.
+    The overridden hashCode() calculates a hashCode from the key's numID and color.
  */
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
