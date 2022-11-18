@@ -148,8 +148,10 @@ public class mainDriver extends Application {
         Button startButton = new Button("Start Game");
         Button exitButton = new Button("Exit Game");
         Button pauseButton = new Button("Pause");
+        Button invisibleButton = new Button();
+        invisibleButton.setVisible(false);
         exitButton.setTranslateX(630);
-        toolBar.getItems().addAll(startButton, exitButton, pauseButton);
+        toolBar.getItems().addAll(startButton, exitButton, pauseButton, invisibleButton);
         vertContainer.getChildren().add(toolBar);
 
         // adding a label to display the elapsed time on the toolbar
@@ -206,6 +208,7 @@ public class mainDriver extends Application {
         // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
+
         Button invisibleButton = new Button();
         invisibleButton.setVisible(false);
         vertContainer.getChildren().add(invisibleButton);
@@ -219,6 +222,7 @@ public class mainDriver extends Application {
         GameMap<NPC, Integer> playerMap = new GameMap<>();
 
         playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
+
             if (playerMap.getRoomCount(5) == 99) {
                 invisibleButton.fire();
                 // pauseButton.fire();
@@ -285,7 +289,7 @@ public class mainDriver extends Application {
 
 
         // prints the hashcode of the runner and the room they are in at the start of the game
-        playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
+        //playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
 
         //event handler for the start button
         startButton.setOnAction(e -> {
@@ -441,6 +445,7 @@ public class mainDriver extends Application {
                                         playerMap.put(gotTaggedList.get(d), 5);
                                         invisibleButton.fire();
                                         removalComplete = true;
+                                        invisibleButton.fire();
                                     }
                                 }
                             }
@@ -471,6 +476,7 @@ public class mainDriver extends Application {
 
             //event handler for the invisibleButton
             invisibleButton.setOnAction(event -> {
+
                 if (playerMap.getRoomCount(5) == 99) {
                     timer.pause();
                     timeline.pause();
