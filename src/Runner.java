@@ -23,6 +23,7 @@ public class Runner extends NPC {
 
     @Override
     public String toString() {
-        return "ID#" + getNumID();
+        return (super.toString() + "| Runner | " );
     }
+
 }

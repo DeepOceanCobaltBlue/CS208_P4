@@ -1,5 +1,5 @@
-/*  Christopher Peters - Wrote class in accordance with UML design
-
+/*  Christopher Peters - Wrote class in accordance with UML design,
+    added Equals method.
  */
 
 import javafx.scene.paint.Paint;
@@ -46,6 +46,21 @@ public abstract class NPC extends GameItem {
 
     @Override
     public String toString() {
-        return super.toString() + "| NPC | SpeedX: " + this.speedX + " | SpeedY: " + this.speedY + " | Can Teleport: " + this.canTeleport;
+        return (super.toString() + " | NPC " );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(obj.getClass() == this.getClass()) {
+            NPC npc = (NPC) obj;
+            return ( (this.getNumID() == npc.getNumID()) && (this.getCanTeleport() == npc.getCanTeleport()) );
+        }
+        return false;
     }
 }

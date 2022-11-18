@@ -13,4 +13,9 @@ public class Teleporter extends GameItem {
         super(centerX, centerY, rad, inColor);
         super.setNumID(ID);
     }
+
+    @Override
+    public String toString() {
+        return ( super.toString() + " | Teleporter |");
+    }
 }

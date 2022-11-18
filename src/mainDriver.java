@@ -10,7 +10,7 @@
  *
  * @modified by Christopher Peters - reorganized and optimized code implementations. Fixed some bugs to get the final
  * version of the game operational. Wrote initialization code for taggers/runners as well as handling teleportation.
- * Helped get invisiblebutton concept implemented. Helped with collision logic.
+ * Helped get invisibleButton concept implemented. Helped with collision logic.
  *
  * @modified by Josue Florian - implemented final custom hashmap and hashcode function. Wrote a statistics board
  * to be able to visualize the hashmap during the game. Handled the updating of runner hashmap values. Implemented
@@ -285,9 +285,9 @@ public class mainDriver extends Application {
                 @Override
                 public void handle(ActionEvent t) {
 
-                    Bounds bounds = topLeftRoom.getLayoutBounds();
-                    ArrayList<Runner> teleportMe = new ArrayList<>();
-                    ArrayList<Runner> gotTaggedList = new ArrayList<>();
+                    Bounds bounds = topLeftRoom.getLayoutBounds();          // used to calculate collisions, all rooms identical sizes
+                    ArrayList<Runner> teleportMe = new ArrayList<>();       // bucket to process runners who collide with teleport
+                    ArrayList<Runner> gotTaggedList = new ArrayList<>();    // bucket to process runners who collide with taggers
 
                     // ___ update position ___
                     for (NPC npc : npcList) {
@@ -305,7 +305,7 @@ public class mainDriver extends Application {
                         }
 
                         // ___ check for collisions ___
-                        for (Teleporter tele : teleList) {
+                        for (Teleporter tele : teleList) {  // collisions with teleporter
                             if (Circle.intersect(npc, tele).getBoundsInLocal().getWidth() != -1) {
                                 // if intersect shape contains any width => intersection => move Runner
                                 if (npc.getCanTeleport()) {
@@ -324,7 +324,7 @@ public class mainDriver extends Application {
                             }
                         }
 
-                        for (Tagger tagr : taggersList) {
+                        for (Tagger tagr : taggersList) {   // collisions with tagger
                             if (Circle.intersect(npc, tagr).getBoundsInLocal().getWidth() != -1) {
                                 // if intersect shape contains any width => intersection => move Runner
                                 if (npc.getCanTeleport()) {
@@ -376,11 +376,12 @@ public class mainDriver extends Application {
                                         teleportComplete = true;
                                         // starting position in new room
                                         teleportMe.get(b).setLayoutX(25);
+                                        teleportMe.get(b).setLayoutY(25);
                                     }
                                 }
                             }
                         }
-                        // clear tracker of runners that need to be teleported
+                        // reset tracker of runners that need to be teleported
                         teleportMe.clear();
                     }
                     // if a runner got tagged
@@ -398,13 +399,15 @@ public class mainDriver extends Application {
                                         roomList.get(e).getChildren().remove(gotTaggedList.get(d));
                                         //update playerMap
                                         playerMap.put(gotTaggedList.get(d), 5);
+                                        // don't attempt to remove each runner more than once
                                         removalComplete = true;
-                                        //end condition check
+                                        // 'End game' condition check
                                         invisibleButton.fire();
                                     }
                                 }
                             }
                         }
+                        // reset list of runners who got tagged
                         gotTaggedList.clear();
                     }
                 }
