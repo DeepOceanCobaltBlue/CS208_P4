@@ -169,13 +169,14 @@ public class mainDriver extends Application {
         bottomRoomsContainer.setPrefSize(800, 300);
         vertContainer.getChildren().add(bottomRoomsContainer);
 
-        Text resultsText = new Text("Results: ");
-        resultsText.setFont(new Font(20));
-
+        //adding a text box to display the winner
+        Text resultsLabel = new Text("Results: ");
+        resultsLabel.setFont(new Font(20));
         TextArea results = new TextArea();
         results.setPrefSize(300, 50);
-        vertContainer.getChildren().addAll(resultsText, results);
+        vertContainer.getChildren().addAll(resultsLabel, results);
 
+        // room and player statistics display
         VBox statContainer = new VBox();
         statContainer.setPrefSize(400, 700);
         statContainer.setLayoutX(800);
@@ -203,39 +204,14 @@ public class mainDriver extends Application {
         statContainer.getChildren().addAll(text1, textArea1, text2, textArea2, text3, textArea3, text4, textArea4);
         basePane.getChildren().add(statContainer);
 
-        // adding the two top rooms to topRoomsContainer
+        // adding the rooms to their respective containers
         topRoomsContainer.getChildren().addAll(topLeftRoom, topRightRoom);
-        // adding the two bottom rooms to bottomRoomsContainer
         bottomRoomsContainer.getChildren().addAll(bottomLeftRoom, bottomRightRoom);
 
 
-        Button invisibleButton = new Button();
-        invisibleButton.setVisible(false);
-        vertContainer.getChildren().add(invisibleButton);
-
-        /**
-         * playerRoomMap maps the runners to the room they are in.
-         * Key = runner hashcode (Integer) *replace with Josue's hashcode*
-         * Value = room Id (String)
-         * */
-        ObservableMap<Integer, String> playerRoomMap = FXCollections.observableHashMap();
+        // custom hashmap and hashcode implementation
         GameMap<NPC, Integer> playerMap = new GameMap<>();
 
-        playerRoomMap.addListener((MapChangeListener<Integer, String>) change -> {
-
-            if (playerMap.getRoomCount(5) == 99) {
-                invisibleButton.fire();
-                // pauseButton.fire();
-                String winner = "";
-                for (int i = 1; i < 5; i++) {
-                    if (!(playerMap.getRoom(i).equals(""))) {
-                        winner = playerMap.getRoom(i);
-                        System.out.println(winner);
-                    }
-                }
-
-            }
-        });
 
         // add players to rooms by cycling through rooms
         int roomIndex = 0;
@@ -244,22 +220,22 @@ public class mainDriver extends Application {
             switch (roomIndex) {
                 case 0:
                     runr.setFill(Color.AQUA);
-                    playerRoomMap.put(runr.hashCode(), topLeftRoom.getId());
+//                    playerRoomMap.put(runr.hashCode(), topLeftRoom.getId());
                     playerMap.put(runr, 1);
                     break;
                 case 1:
                     runr.setFill(Color.FORESTGREEN);
-                    playerRoomMap.put(runr.hashCode(), topRightRoom.getId());
+//                    playerRoomMap.put(runr.hashCode(), topRightRoom.getId());
                     playerMap.put(runr, 2);
                     break;
                 case 2:
                     runr.setFill(Color.CRIMSON);
-                    playerRoomMap.put(runr.hashCode(), bottomLeftRoom.getId());
+//                    playerRoomMap.put(runr.hashCode(), bottomLeftRoom.getId());
                     playerMap.put(runr, 3);
                     break;
                 case 3:
                     runr.setFill(Color.DARKVIOLET);
-                    playerRoomMap.put(runr.hashCode(), bottomRightRoom.getId());
+//                    playerRoomMap.put(runr.hashCode(), bottomRightRoom.getId());
                     playerMap.put(runr, 4);
                     break;
             }
@@ -288,18 +264,13 @@ public class mainDriver extends Application {
         npcList.addAll(taggersList);
 
 
-        // prints the hashcode of the runner and the room they are in at the start of the game
-        //playerRoomMap.forEach((k, v) -> System.out.println(k + " : " + v));
-
         //event handler for the start button
         startButton.setOnAction(e -> {
 
-            // prevents the user from starting the game multiple times
+            //prevents the user from starting the game multiple times
             startButton.setDisable(true);
 
-/**
- * Creating a timer to track elapsed time and display it on the game board.
- */
+            //elapsed time counter
             final double[] time = {0};
             Timeline timer = new Timeline(new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
                 @Override
@@ -309,14 +280,11 @@ public class mainDriver extends Application {
 
                 }
             }));
-
             timer.setCycleCount(Timeline.INDEFINITE);
             timer.play();
 
-
             //creating the timeline for the game loop
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-
 
                 @Override
                 public void handle(ActionEvent t) {
@@ -390,25 +358,21 @@ public class mainDriver extends Application {
                                         switch (a) {
                                             case 0:
                                                 roomList.get(1).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(1).getId());
                                                 playerMap.put(teleportMe.get(b), 2);
                                                 break;
 
                                             case 1:
                                                 roomList.get(2).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(2).getId());
                                                 playerMap.put(teleportMe.get(b), 3);
                                                 break;
 
                                             case 2:
                                                 roomList.get(3).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(3).getId());
                                                 playerMap.put(teleportMe.get(b), 4);
                                                 break;
 
                                             case 3:
                                                 roomList.get(0).getChildren().add(teleportMe.get(b));
-                                                playerRoomMap.put(teleportMe.get(b).hashCode(), roomList.get(0).getId());
                                                 playerMap.put(teleportMe.get(b), 1);
                                                 break;
                                         }
@@ -423,12 +387,9 @@ public class mainDriver extends Application {
                         }
                         // clear tracker of runners that need to be teleported
                         teleportMe.clear();
-
                     }
-
                     // if a runner got tagged
                     if (gotTaggedList.size() > 0) {
-
 
                         // for each runner in gotTaggedList
                         for (int d = 0; d < gotTaggedList.size(); d++) {
@@ -440,11 +401,10 @@ public class mainDriver extends Application {
                                     if (!removalComplete) {
                                         // remove runner from current room
                                         roomList.get(e).getChildren().remove(gotTaggedList.get(d));
-                                        // remove runner from playerRoomMap
-                                        playerRoomMap.remove(gotTaggedList.get(d).hashCode());
+
                                         playerMap.put(gotTaggedList.get(d), 5);
-                                        invisibleButton.fire();
                                         removalComplete = true;
+                                        //end condition check
                                         invisibleButton.fire();
                                     }
                                 }
@@ -452,7 +412,6 @@ public class mainDriver extends Application {
                         }
                         gotTaggedList.clear();
                     }
-
                 }
             }));
 
@@ -474,9 +433,8 @@ public class mainDriver extends Application {
                 }
             });
 
-            //event handler for the invisibleButton
+            //event handler for invisibleButton, stops the game and displays the end results when 1 runner is left
             invisibleButton.setOnAction(event -> {
-
                 if (playerMap.getRoomCount(5) == 99) {
                     timer.pause();
                     timeline.pause();
@@ -487,12 +445,12 @@ public class mainDriver extends Application {
                             System.out.println(winner);
                         }
                     }
-                    results.setText("The winner is " + winner + "!");
+                    results.setText("The winner is " + winner + "!\n");
                     results.appendText("The runner lasted for: " + timeLabel.getText().substring(14) + " seconds.");
                 }
             });
 
-        });//end of start method
+        });//end of start button event handler
 
         //event handler for the exit button
         exitButton.setOnAction(e -> {
@@ -500,13 +458,11 @@ public class mainDriver extends Application {
             System.exit(0);
         });
 
-
+        //set the scene and show the stage
         primaryStage.setResizable(false);
         primaryStage.setTitle("Game of Tag!");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
     }
 
 
